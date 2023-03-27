@@ -1,5 +1,28 @@
+class Health{
+    constructor(){
+        this.health=0
+        this.maxHealth=8
+        this.node=document.getElementById("health")
+    }
+
+    decreaseHealth(){
+        if( this.health>=0 && this.health<this.maxHealth){
+            this.health++
+            this.node.src=`./images/healthbar/health-${this.health}.png`
+        }
+    }
+
+    increaseHealth(){
+        if( this.health<=this.maxHealth){
+            this.health--
+            this.node.src=`./images/healthbar/health-${this.health}.png`
+        }
+    }
+
+}
 
 const NINJA_HEIGHT = "475px"
+const health_bar = new Health()
 console.log(`Type: "help()" to learn how to get started`)
 function sleep(milliseconds) {
     const date = Date.now();
@@ -54,16 +77,17 @@ function actions(){
 }
 
 
-
+const POSITIONS=["400px", "500px", "600px", "700px", "50px"]
+const IDS=["first" ,"second", "third", "fourth", "hero"]
 
 class Ninja{
     
-    static ids = ["first" ,"second", "third", "fourth"]
-    static positions = ["100px", "200px", "300px", "400px"]
+    static ids = [...IDS]
+    static positions = [...POSITIONS]
 
     static reset(){
-        Ninja.ids = ["first" ,"second", "third", "fourth"]
-        Ninja.positions  = ["100px", "200px", "300px", "400px"]
+        Ninja.ids = [...IDS]
+        Ninja.positions  = [...POSITIONS]
         document.getElementById("backdrop").innerHTML=""
     }
     
@@ -71,7 +95,9 @@ class Ninja{
         this.backdrop=document.getElementById("backdrop")
         let img = document.createElement("img")
         this.img = img
-        img.src="./images/standing-min.png"
+
+        this.baseImg="./images/standing-min.png"
+
         img.style.height="450px"
         img.style.position="absolute"
         img.style.top=NINJA_HEIGHT
@@ -79,6 +105,10 @@ class Ninja{
         if (Ninja.positions.length>0){
             this.position=Ninja.positions.pop()
             this.id=Ninja.ids.pop()
+            if (this.id=="hero"){
+                this.baseImg="./images/hero-standing-min.png"
+            }
+            img.src=this.baseImg
             img.id=this.id
             img.style.left=this.position
         }
@@ -93,9 +123,17 @@ class Ninja{
     walk(n = 1, direction=-1) {
         let baseimg = document.getElementById(this.id);
         let img = baseimg.cloneNode()
-        img.src = "./images/animate-walking-min.gif";
+        if (this.id == "hero"){
+            img.src="./images/hero-walk-min.gif"
+        }else{
+            img.src = "./images/animate-walking-min.gif";
+        }
+
         let top = parseInt(img.style.top)
-        let newTop=top+15
+        let newTop=top
+        if (this.id !=="hero"){
+            newTop+=+15
+        }
         
         let left = parseInt(img.style.left)
         let newLeft=left+25
@@ -123,18 +161,19 @@ class Ninja{
             clearInterval(intervalId)
             let newImg=img.cloneNode()
 
-            newImg.src = "./images/standing.png"
+            newImg.src = this.baseImg
             if(direction>0){
                 newImg.left
             }else{
                 newImg.left=`${parseInt(newImg.left)-20}px`
             }
             
-            newImg.style.top =NINJA_HEIGHT
+            newImg.style.top = NINJA_HEIGHT
             if(direction>0){
                 newImg.style.transform="scaleX(1)"
             }
-            this.backdrop.appendChild(newImg)
+            this.img=newImg
+            this.backdrop.appendChild(this.img)
             this.backdrop.removeChild(img)
             // img.replaceWith(newImg)
             return
@@ -158,6 +197,9 @@ class Ninja{
     walkleft(n=1){this.walkLeft(n)}
   
     throwStar(direction="left"){
+        if (this.id=="hero"){
+            console.log("Our Hero can not throw stars")
+            return}
         let img = document.getElementById(this.id);
         let newImg = img.cloneNode()
         if (direction=="left"){
@@ -179,13 +221,116 @@ class Ninja{
         star.style.top="600px"
         let left
         if (direction =="left"){
-            left = parseInt(this.position) + 100
+            left = parseInt(this.img.style.left) + 45
         }else{
-            left = parseInt(this.position) + 130
+            left = parseInt(this.img.style.left) + 125
         }
         star.style.left=`${left}px`
-        const removeStar=() => star.remove(); 
-        setTimeout(removeStar,3000)
+        let hero=document.getElementById("hero")
+        let cnt=0
+        const intervalId=setInterval(()=>{
+            console.log("counter:", cnt++)
+            let endLoop=()=>{    
+                clearInterval(intervalId)
+                star.remove()
+            }
+            if(direction=="left" && parseInt(star.style.left)<=parseInt(hero.style.left)+150){
+                //hit the hero
+                endLoop()
+                health_bar.decreaseHealth()
+            }else if(direction=="right" && parseInt(star.style.left)>=parseInt(hero.style.left)+75){
+                //hit the hero
+                endLoop()
+                health_bar.decreaseHealth()
+            }else if(parseInt(star.style.left)>=1050 ||parseInt(star.style.left)<=-50){
+                endLoop()
+            }
+
+            let left=parseInt(star.style.left)
+            if (direction ==="left"){ 
+                star.style.left=`${left-5}px`
+            }else{
+                star.style.left=`${left+5}px`
+            }
+        },30)
+
+
+        // const removeStar=() => star.remove(); 
+        // setTimeout(removeStar,3000)
+    }
+
+    attack(enemy){
+        if (enemy == undefined || enemy==null){
+            console.log("I need to know what enemy to attack")
+            return
+        }
+        let hero = document.getElementById(this.id)
+        if (hero.id !=="hero"){
+            console.log("Only Our Hero Can Throw Knives")
+            return
+        }
+        let newImg = hero.cloneNode()
+
+        this.backdrop.removeChild(this.img)
+        this.backdrop.appendChild(newImg)
+        let direction
+        if(hero.style.left >= enemy.img.style.left){
+            //throw toward the left
+            direction = "left"
+            newImg.src="./images/hero-throw-knife-left-min.gif"
+            newImg.insertAdjacentHTML("afterend","<img src='./images/knife-left-min.gif' class='knifeLeft' id='knife'>")
+
+        }else{
+            //throw toward the right
+            direction="right"
+            newImg.src="./images/hero-throw-knife-right-min.gif"
+            newImg.insertAdjacentHTML("afterend","<img src='./images/knife-right-min.gif' class='knifeRight' id='knife'>")
+        }
+
+        let knife = document.getElementById("knife")
+        if(direction == "right"){
+            knife.style.left = `${parseInt(newImg.style.left)+175}px`
+        }else if (direction=="left"){
+            knife.style.left = `${parseInt(newImg.style.left)+75}px`
+
+        }
+
+        knife.style.height="75px"
+        knife.style.position="absolute"
+        knife.style.top="600px"
+
+        let i = 0;
+        
+        const intervalId=setInterval(()=>{
+            let endLoop=()=>{    
+                clearInterval(intervalId)
+                knife.remove()
+                enemy.remove()
+                this.backdrop.removeChild(newImg)  
+                this.backdrop.appendChild(this.img)
+            }
+            if(direction==="right"){
+                if (parseInt(knife.style.left) >= parseInt(enemy.img.style.left) + 25 ||parseInt(knife.style.left)<=0||parseInt(knife.style.left)>=1000) {
+                    endLoop()
+                }
+            }else if (direction ==="left"){
+                if (parseInt(knife.style.left) <= parseInt(enemy.img.style.left) + 115 ||parseInt(knife.style.left)<=0||parseInt(knife.style.left)>=1000) {
+                    endLoop()
+                }       
+            }
+
+            if(direction==="right"){
+                let left = parseInt(knife.style.left)
+                knife.style.left=`${left+5}px`
+            }else if(direction==="left"){
+                let left = parseInt(knife.style.left)
+                knife.style.left=`${left-5}px`
+            }
+        }, 15)
+
+
+
+
     }
 
     throwStarLeft(){

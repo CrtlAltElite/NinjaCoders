@@ -1,5 +1,5 @@
 #backdrop{
-    background-image: url(../images/backdrop-min.png);
+    background-image: url(../images/backdrop-min.jpg);
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
@@ -10,6 +10,13 @@ body{
     background-color: black;
 }
 
+#health{
+    position: absolute;
+    top:215px;
+    left: 25px;
+    width:300px;
+    mask-image: linear-gradient(to right, black 70%, transparent 100%);
+}
 
 @keyframes throwStarRight {
     from {
@@ -20,16 +27,20 @@ body{
     }
 }
 
+#knife{
+    z-index: 99;
+}
+
 .starRight{
     position: absolute;
-    left: 500px;
-    animation: throwStarRight linear 3s;
+    /* left: 500px; */
+    /* animation: throwStarRight linear 3s; */
 }
 
 .starLeft{
     position: absolute;
-    left: 500px;
-    animation: throwStarLeft linear 3s;
+    /* left: 500px; */
+    /* animation: throwStarLeft linear 3s; */
 }
 
 @keyframes throwStarLeft {
