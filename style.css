@@ -1,0 +1,42 @@
+#backdrop{
+    background-image: url(../images/backdrop-min.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    width:1000px;
+    height:1000px;
+}
+body{
+    background-color: black;
+}
+
+
+@keyframes throwStarRight {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        left:975px;
+    }
+}
+
+.starRight{
+    position: absolute;
+    left: 500px;
+    animation: throwStarRight linear 3s;
+}
+
+.starLeft{
+    position: absolute;
+    left: 500px;
+    animation: throwStarLeft linear 3s;
+}
+
+@keyframes throwStarLeft {
+    from {
+        transform: translateX(0);
+      }
+      to {
+        left:25px;
+      }
+  }
