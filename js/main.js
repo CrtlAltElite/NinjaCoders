@@ -396,14 +396,14 @@ class Token{
             }
 
             const heroOnLeft=()=>{
-                if(parseInt(hero.style.left) < parseInt(this.img.style.left)){
+                if(hero && parseInt(hero.style.left) < parseInt(this.img.style.left)){
                     return true
-                }else{
-                    return false
                 }
+                    return false
+                
             }
 
-            if((direction=="left" && parseInt(star.style.left)<=parseInt(hero.style.left)+200 )||(direction=="right" && parseInt(star.style.left)>=parseInt(hero.style.left)+50)){
+            if((hero&&direction=="left" && parseInt(star.style.left)<=parseInt(hero.style.left)+200 )||(hero&&direction=="right" && parseInt(star.style.left)>=parseInt(hero.style.left)+50)){
                 if (hero.classList.contains("blocking")){
                     console.log("blocked")
                     endLoop()
@@ -411,7 +411,7 @@ class Token{
                 }
             }
 
-            if(direction=="left" && heroOnLeft() && parseInt(star.style.left)<=parseInt(hero.style.left)+150){
+            if(hero&&direction=="left" && heroOnLeft() && parseInt(star.style.left)<=parseInt(hero.style.left)+150){
                 //hit the hero
                 if (!hero.classList.contains("blocking")){
                     hero.src='./images/damage_animate.gif'
@@ -420,7 +420,7 @@ class Token{
                     checkDeath()
                 }
                 endLoop()
-            }else if(direction=="right" && !heroOnLeft() && parseInt(star.style.left)>=parseInt(hero.style.left)+65){
+            }else if(hero&&direction=="right" && !heroOnLeft() && parseInt(star.style.left)>=parseInt(hero.style.left)+65){
                 //hit the hero
 
                 if (!hero.classList.contains("blocking")){
