@@ -483,8 +483,8 @@ class Footmen extends Token{
 
     remove(){
         this.img.remove()
-        Footmen.ids.append(this.id)
-        Footmen.positions.append(this.position)
+        Footmen.ids.push(this.id)
+        Footmen.positions.push(this.position)
     }
 }
 
