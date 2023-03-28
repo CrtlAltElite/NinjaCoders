@@ -4,7 +4,7 @@ class Health{
         this.maxHealth=8
         this.node=document.getElementById("health")
     }
-
+    
     decreaseHealth(){
         if( this.health>=0 && this.health<this.maxHealth){
             this.health++
@@ -18,12 +18,20 @@ class Health{
             this.node.src=`./images/healthbar/health-${this.health}.png`
         }
     }
-
+    
 }
 
 const NINJA_HEIGHT = "475px"
+const FOOTMEN_POSITIONS=["400px", "500px", "600px", "700px"]
+const FOOTMEN_IDS=["first" ,"second", "third", "fourth"]
+const HERO_POSITIONS=["50px"]
+const HERO_IDS=["hero"]
+
+
 const health_bar = new Health()
 console.log(`Type: "help()" to learn how to get started`)
+
+
 function sleep(milliseconds) {
     const date = Date.now();
     let currentDate = null;
@@ -33,42 +41,59 @@ function sleep(milliseconds) {
   }
 
 function reset(){
-    Ninja.reset()
+    
+    Token.reset()
 }
 
 
 function help(){
-    console.log("%cLet's Learn how to use our Ninjas","color: #8FD129; font-size: 20px");
-    console.log(`%cYou can create up to 4 ninjas
-
-to create a new ninja give your ninja a name, like "raph" and write`,"color: #8FD129");
-    console.log("%clet raph = new Ninja()","color: #ED1C28")
-    console.log(`%cBe sure to use lower case letter except for the N in Ninja
-    and replace Raph with any name you want`,"color: #8FD129");
-    console.log(`%cTo learn what you can do with your Ninja type "actions()"`,"color: #785447; font-size: 16px");
+    console.log("%cLet's Learn how to create your Hero","color: #8FD129; font-size: 20px");
+    console.log(`%cYou can create only 1 Hero
+to create a new Hero give your ninja a name, like "masterYoshi" and write`,"color: #8FD129");
+    console.log("%clet masterYoshi = new Hero()","color: #ED1C28")
+    console.log(`%cBe sure to use lower case letters for 'new Hero' except for the H
+    and replace masterYoshi with any name you want`,"color: #8FD129");
+    console.log(`%cTo learn what you can do with your Hero type "actions()"`,"color: #785447; font-size: 16px");
     console.log(`%cYou can start over at anytime by typing "reset()"`,"color: #785447; font-size: 16px")
+    console.log("%cLets create some Footmen to Defeat","color: #8FD129; font-size: 20px");
+    console.log("%clet danny = new Footmen()","color: #ED1C28")
+    console.log(`%cBe sure to use lower case letters for 'new Footmen' except for the F
+    and replace danny with any name you want`,"color: #8FD129");
 }
 
 function actions(){
-    console.log("%cMOVEMENT","color: #8FD129; font-size: 20px");
-    console.log(`%cYou can make your ninja walk left or walk right by using the ninjas name like so:`,"color: #8FD129");
-    console.log("%craph.walkLeft()","color: #ED1C28")
-    console.log(`%c- or -`,"color: #8FD129");
-    console.log("%craph.walkRight()","color: #ED1C28")
-    console.log(`%cYou can make them walk farther by passing a number of steps as an argument to the move function:`,"color: #8FD129");
-    console.log("%craph.walkLeft(2)","color: #ED1C28")
-    console.log(`%c- or -`,"color: #8FD129");
-    console.log("%craph.walkRight(2)","color: #ED1C28")
 
-    console.log("%c\nTHROWING STAR","color: #8FD129; font-size: 20px");
-    console.log(`%cYou can make your ninja throw a ninja star to the Left or the Right like so:`,"color: #8FD129");
-    console.log("%craph.throwStarLeft()","color: #ED1C28")
+    console.log("%cMOVEMENT","color: #8FD129; font-size: 20px");
+    console.log(`%cYou can make the ninjas (both Hero and Footmen) walk left or walk right by using the ninjas name like so:`,"color: #8FD129");
+    console.log("%cmasterYoshi.walkLeft()","color: #ED1C28")
     console.log(`%c- or -`,"color: #8FD129");
-    console.log("%craph.throwStarRight()","color: #ED1C28")
+    console.log("%cmasterYoshi.walkRight()","color: #ED1C28")
+    console.log(`%cYou can make them walk farther by passing a number of steps as an argument to the move function:`,"color: #8FD129");
+    console.log("%cmasterYoshi.walkLeft(2)","color: #ED1C28")
+    console.log(`%c- or -`,"color: #8FD129");
+    console.log("%cmasterYoshi.walkRight(2)","color: #ED1C28")
+
+    console.log("%c\nTHROWING STAR - FOOTMEN ONLY","color: #8FD129; font-size: 20px");
+    console.log(`%cYou can make a member of the Footmen throw a ninja star to the Left or the Right like so:`,"color: #8FD129");
+    console.log("%cdanny.throwStarLeft()","color: #ED1C28")
+    console.log(`%c- or -`,"color: #8FD129");
+    console.log("%cdanny.throwStarRight()","color: #ED1C28")
+
+    console.log("%c\nKNIFE THROW - HERO ONLY","color: #8FD129; font-size: 20px");
+    console.log(`%cYou can make your Hero throw a knife at a member of the footclan:`,"color: #8FD129");
+    console.log("%cmasterYoshi.attack(danny)","color: #ED1C28")
+    console.log(`%c- or -`,"color: #8FD129");
+    console.log("%cmasterYoshi.attack(danny)","color: #ED1C28")
+
+    console.log("%c\nBLOCK - HERO ONLY","color: #8FD129; font-size: 20px");
+    console.log(`%cYou can make your Hero block Left or Right:`,"color: #8FD129");
+    console.log("%cmasterYoshi.blockLeft()","color: #ED1C28")
+    console.log(`%c- or -`,"color: #8FD129");
+    console.log("%cmasterYoshi.blockRight()","color: #ED1C28")   
 
     console.log("%c\n REMOVING NINJA","color: #8FD129; font-size: 20px");
-    console.log(`%cYou can remove a ninja by calling the remove method on the ninja with its name like so:`,"color: #8FD129");
-    console.log("%craph.remove()","color: #ED1C28")
+    console.log(`%cYou can remove a ninja (both Hero and Footmen) by calling the remove method on the ninja with its name like so:`,"color: #8FD129");
+    console.log("%cmasterYoshi.remove()","color: #ED1C28")
 
     console.log("%c\n STARTING OVER","color: #8FD129; font-size: 20px");
     console.log(`%cYou can start over by running the reset function:`,"color: #8FD129");
@@ -80,31 +105,36 @@ function actions(){
 const POSITIONS=["400px", "500px", "600px", "700px", "50px"]
 const IDS=["first" ,"second", "third", "fourth", "hero"]
 
-class Ninja{
+class Token{
     
     static ids = [...IDS]
     static positions = [...POSITIONS]
+    static isRunning=false
 
     static reset(){
-        Ninja.ids = [...IDS]
-        Ninja.positions  = [...POSITIONS]
+        Token.ids = [...IDS]
+        Token.positions  = [...POSITIONS]
+        Hero.ids = [...HERO_IDS]
+        Hero.positions = [...HERO_POSITIONS]
+        Footmen.ids = [...FOOTMEN_IDS]
+        Footmen.positions = [...FOOTMEN_POSITIONS]
         document.getElementById("backdrop").innerHTML=""
     }
     
-    constructor(){
+    constructor(Invoker){
         this.backdrop=document.getElementById("backdrop")
         let img = document.createElement("img")
         this.img = img
-
+        this.isBlocking=false
         this.baseImg="./images/standing-min.png"
 
         img.style.height="450px"
         img.style.position="absolute"
         img.style.top=NINJA_HEIGHT
         img.style.zIndex=99
-        if (Ninja.positions.length>0){
-            this.position=Ninja.positions.pop()
-            this.id=Ninja.ids.pop()
+        if (Invoker.positions.length>0){
+            this.position=Invoker.positions.pop()
+            this.id=Invoker.ids.pop()
             if (this.id=="hero"){
                 this.baseImg="./images/hero-standing-min.png"
             }
@@ -113,7 +143,7 @@ class Ninja{
             img.style.left=this.position
         }
         else{
-            console.log("You can only have 4 Ninjas")
+            console.log("You can only have 4 Footmen and 1 Hero")
             return
         }
         this.backdrop.appendChild(img)
@@ -121,6 +151,8 @@ class Ninja{
     }
 
     walk(n = 1, direction=-1) {
+        if(Token.isRunning)return
+        Token.isRunning=true
         let baseimg = document.getElementById(this.id);
         let img = baseimg.cloneNode()
         if (this.id == "hero"){
@@ -137,6 +169,7 @@ class Ninja{
         
         let left = parseInt(img.style.left)
         let newLeft=left+25
+
         if (direction>0){
             img.style.left=`${newLeft}px`
         }
@@ -151,7 +184,7 @@ class Ninja{
         function move() {
           let left = parseInt(img.style.left) || 0;
           let newLeft = left + (1 * direction);
-          if (newLeft > 0 || newLeft < 1000){
+          if (newLeft > -150 && newLeft < 1150){
               img.style.left = `${newLeft}px`;
           }
         }
@@ -176,6 +209,7 @@ class Ninja{
             this.backdrop.appendChild(this.img)
             this.backdrop.removeChild(img)
             // img.replaceWith(newImg)
+            Token.isRunning=false
             return
           }
           move()
@@ -197,11 +231,14 @@ class Ninja{
     walkleft(n=1){this.walkLeft(n)}
   
     throwStar(direction="left"){
+        if(Token.isRunning)return
+        Token.isRunning=true
         if (this.id=="hero"){
             console.log("Our Hero can not throw stars")
             return}
         let img = document.getElementById(this.id);
         let newImg = img.cloneNode()
+        newImg.classList.add("throwing")
         if (direction=="left"){
             newImg.src="./images/right-arm-throw-min.gif"
         }else{
@@ -229,19 +266,42 @@ class Ninja{
         let hero=document.getElementById("hero")
         let cnt=0
         const intervalId=setInterval(()=>{
-            console.log("counter:", cnt++)
             let endLoop=()=>{    
                 clearInterval(intervalId)
+                newImg.classList.remove("throwing")
                 star.remove()
+                Token.isRunning=false
             }
+            function checkDeath(){
+                if(health_bar.health==0){
+                    document.getElementById("gameover").style.visibility="visible"
+                }
+            }
+            if((direction=="left" && parseInt(star.style.left)<=parseInt(hero.style.left)+200)||(direction=="right" && parseInt(star.style.left)>=parseInt(hero.style.left)+50)){
+                if (hero.classList.contains("blocking")){
+                    console.log("blocked")
+                    return endLoop()
+                }
+            }
+
             if(direction=="left" && parseInt(star.style.left)<=parseInt(hero.style.left)+150){
                 //hit the hero
+                if (!hero.classList.contains("blocking")){
+                    hero.src='./images/damage_animate.gif'
+                    setTimeout(()=>{hero.src="./images/hero-standing-min.png"},2000)
+                    health_bar.decreaseHealth()
+                    checkDeath()
+                }
                 endLoop()
-                health_bar.decreaseHealth()
             }else if(direction=="right" && parseInt(star.style.left)>=parseInt(hero.style.left)+75){
                 //hit the hero
+                if (!hero.classList.contains("blocking")){
+                    hero.src='./images/damage_animate.gif'
+                    setTimeout(hero.src="./images/hero-standing-min.png",2000)
+                    health_bar.decreaseHealth()
+                    checkDeath()
+                }
                 endLoop()
-                health_bar.decreaseHealth()
             }else if(parseInt(star.style.left)>=1050 ||parseInt(star.style.left)<=-50){
                 endLoop()
             }
@@ -260,6 +320,9 @@ class Ninja{
     }
 
     attack(enemy){
+        if(this.id!=="hero"){console.log("Only our Hero has this ability");return;}
+        if(Token.isRunning)return
+        Token.isRunning=true
         if (enemy == undefined || enemy==null){
             console.log("I need to know what enemy to attack")
             return
@@ -308,6 +371,7 @@ class Ninja{
                 enemy.remove()
                 this.backdrop.removeChild(newImg)  
                 this.backdrop.appendChild(this.img)
+                Token.isRunning=false
             }
             if(direction==="right"){
                 if (parseInt(knife.style.left) >= parseInt(enemy.img.style.left) + 25 ||parseInt(knife.style.left)<=0||parseInt(knife.style.left)>=1000) {
@@ -358,6 +422,69 @@ class Ninja{
 
     remove(){
         this.img.remove()
+        
     }
 
 }
+
+
+
+
+class Hero extends Token{
+    
+    
+    static ids = [...HERO_IDS]
+    static positions = [...HERO_POSITIONS]
+    constructor(){
+        super(Hero)
+    }
+
+    remove(){
+        this.img.remove()
+        Hero.ids.append(this.id)
+        Hero.positions.append(this.position)
+    }
+
+    block(dir="right"){
+        const old = this.img.src
+        //#TODO:
+        this.isBlocking=true
+        if(dir==="right"){
+            this.img.src="./images/block.png"
+        }
+        else{
+            this.img.src="./images/block-left.png"
+        }
+        this.img.classList.add("blocking")
+        setTimeout(()=>{this.img.src="./images/hero-standing-min.png"; this.isBlocking=false; this.img.classList.remove("blocking") },5000)
+    }
+
+    blockLeft(){
+        this.block("left")
+    }
+    blockRight(){
+        this.block("right")
+    }
+    blockleft(){this.blockLeft()}
+    block_left(){this.blockLeft()}
+    block_right(){this.blockRight()}
+    blockright(){this.blockRight()}
+}
+
+
+class Footmen extends Token{
+
+    
+    static ids = [...FOOTMEN_IDS]
+    static positions = [...FOOTMEN_POSITIONS]
+    constructor(){
+        super(Footmen)
+    }
+
+    remove(){
+        this.img.remove()
+        Footmen.ids.append(this.id)
+        Footmen.positions.append(this.position)
+    }
+}
+
