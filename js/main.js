@@ -29,7 +29,7 @@ const HERO_IDS=["hero"]
 
 
 const health_bar = new Health()
-console.log(`Type: "help()" to learn how to get started`)
+console.log(`%cType: "help()" to learn how to get started`,'font-size:25px; color:#8FD129')
 
 
 function sleep(milliseconds) {
@@ -45,6 +45,115 @@ function reset(){
     Token.reset()
 }
 
+const COMMANDS=["Footman Walk Left","Footman Walk Right", "Hero Block", "Hero Walk Left", "Hero Walk Right", "Hero Throw Knife", "Footmen Throw Star"]
+
+let bombList=[]
+
+class Bomb{
+    constructor(){
+        if(bombList.length!==0){
+            return
+        }
+        this.img_src="./images/bomb.png"
+        this.left = Math.floor(Math.random()*1000)
+        // this.left=300
+        this.top = 50
+        this.position="absolute"
+        this.node = document.createElement("img")
+        this.node.style.width="50px"
+        this.node.zIndex="999999999"
+        this.id = "bomb"
+        this.command = COMMANDS[Math.floor(Math.random()*COMMANDS.length)]
+        this.setAttr()
+        bombList.push(this)
+        this.stop
+        this.goInt
+        document.getElementById("backdrop").appendChild(this.node)
+        this.node.insertAdjacentHTML("beforebegin",`<div id="bomb-desc"><span id="bomb_ins">To Stop the Bomb:</span><br>${this.command}</div>`)
+        this.go()
+
+
+    };
+    go(){
+        this.goInt=setInterval(()=>{
+            const hero=document.getElementById("hero")
+            if(hero){
+                let left_bound=parseInt(hero.style.left)+100
+                let right_bound=parseInt(hero.style.left)+200 
+                if(this.left >= left_bound && this.left <=right_bound && parseInt(this.top) >= 500){
+                    console.log("died")
+                    hero.src='./images/damage_animate.gif'
+                    this.setSrc('./images/explode.gif')
+                    setTimeout(()=>{hero.src="./images/hero-standing-min.png"},2000)
+                    health_bar.decreaseHealth()
+                    checkDeath()
+                    setTimeout(()=>this.destroy(), 1500)
+                }
+
+            }
+            if(this.top>725){
+                this.setSrc('./images/explode.gif')
+                setTimeout(()=>this.destroy(), 1500)
+                clearInterval(this.goInt)
+            }
+            this.setTop(this.top + 10)
+        }, 500)
+    }
+    setAttr(){
+        this.node.src=this.img_src,
+        Object.assign(this.node.style,{
+            left:`${this.left}px`,
+            top:`${this.top}px`,
+            id:this.id,
+            position:this.position
+        })
+    }
+
+    setTop(number){
+        this.top=number
+        this.setAttr()
+    }
+    setSrc(src){
+        this.img_src=src
+        this.setAttr()
+    }
+
+    setLeft(number){
+        this.left=number
+        this.setAttr()
+    }
+
+    destroy(){
+        this.node.remove()
+        clearInterval(this.goInt)
+        bombList=bombList.filter((bomb)=>bomb!==this)
+        document.getElementById("bomb-desc").remove()
+    }
+
+    stopRaid(){
+        clearInterval(this.stop)
+        console.log("%cThe raid is ending", "color:#ED1C28")
+    }
+}
+
+function stopRaid(){
+    const intervalId=setInterval(()=>{
+        if (bombList.length!==0){
+            bombList[0].stopRaid()
+            clearInterval(intervalId)
+        }
+    },5000)
+}
+
+function startRaid(){
+        console.log("%cWatch out for BOMBS! \n To Destroy a Bomb Complete the action that pops up", "color: #ED1C28")
+        const intervalId =setInterval(()=>{
+                let b=new Bomb()
+                b.stop=intervalId
+            
+        }
+        ,6000)
+}
 
 function help(){
     console.log("%cLet's Learn how to create your Hero","color: #8FD129; font-size: 20px");
@@ -91,6 +200,15 @@ function actions(){
     console.log(`%c- or -`,"color: #8FD129");
     console.log("%cmasterYoshi.blockRight()","color: #ED1C28")   
 
+    console.log("%c\n BOMB RAIDS","color: #8FD129; font-size: 20px");
+    console.log(`%cYou can start a bomb raid by calling the startRaid() function`,"color: #8FD129");
+    console.log("%cstartRaid()","color: #ED1C28")
+    console.log(`%cYou must dodge or destroy the bombs before they hit you`,"color: #8FD129");
+    console.log(`%cYou can destroy the bombs by performing the action that appears in the box`,"color: #8FD129");
+    console.log(`%cYou can stop a bomb raid by calling the stopRaid() function`,"color: #8FD129");
+    console.log("%cstopRaid()","color: #ED1C28")
+
+
     console.log("%c\n REMOVING NINJA","color: #8FD129; font-size: 20px");
     console.log(`%cYou can remove a ninja (both Hero and Footmen) by calling the remove method on the ninja with its name like so:`,"color: #8FD129");
     console.log("%cmasterYoshi.remove()","color: #ED1C28")
@@ -98,13 +216,18 @@ function actions(){
     console.log("%c\n STARTING OVER","color: #8FD129; font-size: 20px");
     console.log(`%cYou can start over by running the reset function:`,"color: #8FD129");
     console.log("%creset()","color: #ED1C28")
-
+    
 }
 
 
 const POSITIONS=["400px", "500px", "600px", "700px", "50px"]
 const IDS=["first" ,"second", "third", "fourth", "hero"]
 
+function checkDeath(){
+    if(health_bar.health==0){
+        document.getElementById("gameover").style.visibility="visible"
+    }
+}
 class Token{
     
     static ids = [...IDS]
@@ -149,7 +272,7 @@ class Token{
         this.backdrop.appendChild(img)
 
     }
-
+    
     walk(n = 1, direction=-1) {
         if(this.isRunning)return
         this.isRunning=true
@@ -229,7 +352,7 @@ class Token{
     walk_right(n=1){this.walkRight(n)}
     walk_left(n=1){this.walkLeft(n)}
     walkleft(n=1){this.walkLeft(n)}
-  
+    
     throwStar(direction="left"){
         if(this.isRunning)return
         this.isRunning=true
@@ -264,7 +387,6 @@ class Token{
         }
         star.style.left=`${left}px`
         let hero=document.getElementById("hero")
-        let cnt=0
         const intervalId=setInterval(()=>{
             let endLoop=()=>{    
                 clearInterval(intervalId)
@@ -272,19 +394,24 @@ class Token{
                 star.remove()
                 this.isRunning=false
             }
-            function checkDeath(){
-                if(health_bar.health==0){
-                    document.getElementById("gameover").style.visibility="visible"
-                }
-            }
-            if((direction=="left" && parseInt(star.style.left)<=parseInt(hero.style.left)+200)||(direction=="right" && parseInt(star.style.left)>=parseInt(hero.style.left)+50)){
-                if (hero.classList.contains("blocking")){
-                    console.log("blocked")
-                    return endLoop()
+
+            const heroOnLeft=()=>{
+                if(parseInt(hero.style.left) < parseInt(this.img.style.left)){
+                    return true
+                }else{
+                    return false
                 }
             }
 
-            if(direction=="left" && parseInt(star.style.left)<=parseInt(hero.style.left)+150){
+            if((direction=="left" && parseInt(star.style.left)<=parseInt(hero.style.left)+200 )||(direction=="right" && parseInt(star.style.left)>=parseInt(hero.style.left)+50)){
+                if (hero.classList.contains("blocking")){
+                    console.log("blocked")
+                    endLoop()
+                    return
+                }
+            }
+
+            if(direction=="left" && heroOnLeft() && parseInt(star.style.left)<=parseInt(hero.style.left)+150){
                 //hit the hero
                 if (!hero.classList.contains("blocking")){
                     hero.src='./images/damage_animate.gif'
@@ -293,11 +420,12 @@ class Token{
                     checkDeath()
                 }
                 endLoop()
-            }else if(direction=="right" && parseInt(star.style.left)>=parseInt(hero.style.left)+75){
+            }else if(direction=="right" && !heroOnLeft() && parseInt(star.style.left)>=parseInt(hero.style.left)+65){
                 //hit the hero
+
                 if (!hero.classList.contains("blocking")){
                     hero.src='./images/damage_animate.gif'
-                    setTimeout(hero.src="./images/hero-standing-min.png",2000)
+                    setTimeout(()=>{hero.src="./images/hero-standing-min.png"},2000)
                     health_bar.decreaseHealth()
                     checkDeath()
                 }
@@ -305,12 +433,16 @@ class Token{
             }else if(parseInt(star.style.left)>=1050 ||parseInt(star.style.left)<=-50){
                 endLoop()
             }
+            const liveStar=document.getElementById("star")
+            if(liveStar){
 
-            let left=parseInt(star.style.left)
-            if (direction ==="left"){ 
-                star.style.left=`${left-5}px`
-            }else{
-                star.style.left=`${left+5}px`
+                let left=parseInt(liveStar.style.left)
+    
+                if (direction ==="left"){ 
+                    star.style.left=`${left-5}px`
+                }else{
+                    star.style.left=`${left+5}px`
+                }
             }
         },30)
 
@@ -439,6 +571,20 @@ class Hero extends Token{
         super(Hero)
     }
 
+    attack(enemy){
+        if(  bombList.length>0 && bombList[0].command==="Hero Throw Knife"){
+            bombList[0].destroy()
+        }
+        super.attack(enemy)
+    }
+    walk(n=1, direction=-1){
+        if(   (bombList.length>0 && direction !==-1 && bombList[0].command==="Hero Walk Right") || 
+        (bombList.length>0 && direction==-1 && bombList[0.].command==="Hero Walk Left")){
+            bombList[0].destroy()
+        }
+        super.walk(n,direction)
+    }
+
     remove(){
         this.img.remove()
         Hero.ids.push(this.id)
@@ -446,6 +592,10 @@ class Hero extends Token{
     }
 
     block(dir="right"){
+        if(  bombList.length>0 && bombList[0].command==="Hero Block"){
+            bombList[0].destroy()
+        }
+
         const old = this.img.src
         //#TODO:
         this.isBlocking=true
@@ -479,6 +629,20 @@ class Footmen extends Token{
     static positions = [...FOOTMEN_POSITIONS]
     constructor(){
         super(Footmen)
+    }
+
+    throwStar(direction){
+        if( bombList.length>0 && bombList[0].command==="Footmen Throw Star"){
+            bombList[0].destroy()
+        }
+        super.throwStar(direction)
+    }
+    walk(n, direction){
+        if( ( bombList.length>0 && direction !==-1 && bombList[0].command==="Footman Walk Right") || 
+        ( bombList.length>0 && direction==-1 && bombList[0.].command==="Footman Walk Left")){
+            bombList[0].destroy()
+        }
+        super.walk(n,direction)
     }
 
     remove(){

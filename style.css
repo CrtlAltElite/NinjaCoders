@@ -1,7 +1,4 @@
-@font-face {
-    font-family: tmnt;
-    src: url(./fonts/tmnt.ttf);
-}
+
 
 #backdrop{
     background-image: url(./images/backdrop-min.jpg);
@@ -14,6 +11,57 @@
 body{
     background-color: black;
 }
+#bomb-desc{
+    text-align: center;
+    align-content: center;
+    background-color:#1F3C74;
+    color:#ED1C28;
+    padding:15px;
+    width:200px;
+    height: 50px;
+    position: absolute;
+    top: 25px;
+    left: 400px;
+    border: 1px solid #ED1C28;
+    font-size: 20px;
+}
+
+#bomb_ins{
+    color:white;
+}
+
+
+  #bomb-desc::before,
+  #bomb-desc::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    background: linear-gradient(45deg,#ED1C28,#1F3C74,#15C6A0,#FFEEA6,#e11d74,black,#FFEEA6,#aa0000);
+    background-size: 400%;
+    width: calc(100% + 8px);
+    height: calc(100% + 8px);
+    z-index: -1;
+    animation: animate 25s linear infinite;
+  }
+  
+  .shadow::after {
+    filter: blur(25px);
+  }
+  
+  @keyframes animate {
+    0% {
+      background-position: 0 0;
+    }
+  
+    50% {
+      background-position: 400% 0;
+    }
+  
+    100% {
+      background-position: 0 0;
+    }
+  }
 
 #gameover{
     visibility: hidden;
