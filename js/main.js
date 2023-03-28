@@ -441,8 +441,8 @@ class Hero extends Token{
 
     remove(){
         this.img.remove()
-        Hero.ids.append(this.id)
-        Hero.positions.append(this.position)
+        Hero.ids.push(this.id)
+        Hero.positions.push(this.position)
     }
 
     block(dir="right"){
