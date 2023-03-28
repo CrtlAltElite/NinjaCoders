@@ -40,12 +40,10 @@ function sleep(milliseconds) {
     } while (currentDate - date < milliseconds);
   }
 
-function reset(){
-    
-    Token.reset()
-}
+  
+  
 
-const COMMANDS=["Footman Walk Left","Footman Walk Right", "Hero Block", "Hero Walk Left", "Hero Walk Right", "Hero Throw Knife", "Footmen Throw Star"]
+const COMMANDS=[ "Hero Block", "Hero Walk Left", "Hero Walk Right", "Hero Throw Knife"]
 
 let bombList=[]
 
@@ -97,7 +95,7 @@ class Bomb{
                 clearInterval(this.goInt)
             }
             this.setTop(this.top + 10)
-        }, 500)
+        }, 400)
     }
     setAttr(){
         this.node.src=this.img_src,
@@ -158,49 +156,43 @@ function startRaid(){
 function help(){
     console.log("%cLet's Learn how to create your Hero","color: #8FD129; font-size: 20px");
     console.log(`%cYou can create only 1 Hero
-to create a new Hero give your ninja a name, like "masterYoshi" and write`,"color: #8FD129");
-    console.log("%clet masterYoshi = new Hero()","color: #ED1C28")
+to create a new Hero give your ninja a name, like "yoshi" and write`,"color: #8FD129");
+    console.log("%clet yoshi = new Hero()","color: #ED1C28")
     console.log(`%cBe sure to use lower case letters for 'new Hero' except for the H
-    and replace masterYoshi with any name you want`,"color: #8FD129");
+    and replace yoshi with any name you want`,"color: #8FD129");
     console.log(`%cTo learn what you can do with your Hero type "actions()"`,"color: #785447; font-size: 16px");
-    console.log(`%cYou can start over at anytime by typing "reset()"`,"color: #785447; font-size: 16px")
-    console.log("%cLets create some Footmen to Defeat","color: #8FD129; font-size: 20px");
-    console.log("%clet danny = new Footmen()","color: #ED1C28")
-    console.log(`%cBe sure to use lower case letters for 'new Footmen' except for the F
-    and replace danny with any name you want`,"color: #8FD129");
+    console.log(`%cYou can start over at anytime by typing "reset()"`,"color: #785447; font-size: 16px");
 }
 
 function actions(){
 
     console.log("%cMOVEMENT","color: #8FD129; font-size: 20px");
-    console.log(`%cYou can make the ninjas (both Hero and Footmen) walk left or walk right by using the ninjas name like so:`,"color: #8FD129");
-    console.log("%cmasterYoshi.walkLeft()","color: #ED1C28")
+    console.log(`%cYou can make your hero walk left or walk right by using the heros name like so:`,"color: #8FD129");
+    console.log("%yoshi.walkLeft()","color: #ED1C28")
     console.log(`%c- or -`,"color: #8FD129");
-    console.log("%cmasterYoshi.walkRight()","color: #ED1C28")
+    console.log("%yoshi.walkRight()","color: #ED1C28")
     console.log(`%cYou can make them walk farther by passing a number of steps as an argument to the move function:`,"color: #8FD129");
-    console.log("%cmasterYoshi.walkLeft(2)","color: #ED1C28")
+    console.log("%yoshi.walkLeft(2)","color: #ED1C28")
     console.log(`%c- or -`,"color: #8FD129");
-    console.log("%cmasterYoshi.walkRight(2)","color: #ED1C28")
+    console.log("%yoshi.walkRight(2)","color: #ED1C28")
 
-    console.log("%c\nTHROWING STAR - FOOTMEN ONLY","color: #8FD129; font-size: 20px");
-    console.log(`%cYou can make a member of the Footmen throw a ninja star to the Left or the Right like so:`,"color: #8FD129");
-    console.log("%cdanny.throwStarLeft()","color: #ED1C28")
+    console.log("%c\nKNIFE THROW","color: #8FD129; font-size: 20px");
+    console.log(`%cYou can make your Hero throw a knife at a member of the footclan by passing the name of the footclan member to the attack method:`,"color: #8FD129");
+    console.log(`%cEach member of the Footclan has their own specific name. they are:`,"color: #8FD129");
+    console.log("%cbebop\nrocksteady\ndanny\nshedder","color: #ED1C28")
+    console.log("%yoshi.attack(danny)","color: #ED1C28")
     console.log(`%c- or -`,"color: #8FD129");
-    console.log("%cdanny.throwStarRight()","color: #ED1C28")
+    console.log("%yoshi.attack(danny)","color: #ED1C28")
+    console.log(`%cBe sure to use lowercase letters for everything`,"color: #8FD129");
 
-    console.log("%c\nKNIFE THROW - HERO ONLY","color: #8FD129; font-size: 20px");
-    console.log(`%cYou can make your Hero throw a knife at a member of the footclan:`,"color: #8FD129");
-    console.log("%cmasterYoshi.attack(danny)","color: #ED1C28")
-    console.log(`%c- or -`,"color: #8FD129");
-    console.log("%cmasterYoshi.attack(danny)","color: #ED1C28")
 
     console.log("%c\nBLOCK - HERO ONLY","color: #8FD129; font-size: 20px");
     console.log(`%cYou can make your Hero block Left or Right:`,"color: #8FD129");
-    console.log("%cmasterYoshi.blockLeft()","color: #ED1C28")
+    console.log("%yoshi.blockLeft()","color: #ED1C28")
     console.log(`%c- or -`,"color: #8FD129");
-    console.log("%cmasterYoshi.blockRight()","color: #ED1C28")   
+    console.log("%yoshi.blockRight()","color: #ED1C28")   
 
-    console.log("%c\n BOMB RAIDS","color: #8FD129; font-size: 20px");
+    console.log("%c\n BOMB RAIDS","color: #8FD129; font-size: 16px");
     console.log(`%cYou can start a bomb raid by calling the startRaid() function`,"color: #8FD129");
     console.log("%cstartRaid()","color: #ED1C28")
     console.log(`%cYou must dodge or destroy the bombs before they hit you`,"color: #8FD129");
@@ -208,14 +200,18 @@ function actions(){
     console.log(`%cYou can stop a bomb raid by calling the stopRaid() function`,"color: #8FD129");
     console.log("%cstopRaid()","color: #ED1C28")
 
-
-    console.log("%c\n REMOVING NINJA","color: #8FD129; font-size: 20px");
-    console.log(`%cYou can remove a ninja (both Hero and Footmen) by calling the remove method on the ninja with its name like so:`,"color: #8FD129");
-    console.log("%cmasterYoshi.remove()","color: #ED1C28")
-
-    console.log("%c\n STARTING OVER","color: #8FD129; font-size: 20px");
+    console.log("%c\n STARTING OVER","color: #8FD129; font-size: 16px");
     console.log(`%cYou can start over by running the reset function:`,"color: #8FD129");
     console.log("%creset()","color: #ED1C28")
+
+
+    console.log("%c\n Playing the Levels","color: #8FD129; font-size: 20px");
+    console.log(`%cOnce you feel confident in your skills you can play 3 different levels`,"color: #8FD129");
+    console.log(`%cTo Start a level you call the level1, level2, or level3 functions like so:`,"color: #8FD129");
+
+    console.log("%clevel1()","color: #ED1C28")
+    console.log("%clevel2()","color: #ED1C28")
+    console.log("%clevel3()","color: #ED1C28")
     
 }
 
@@ -224,7 +220,7 @@ const POSITIONS=["400px", "500px", "600px", "700px", "50px"]
 const IDS=["first" ,"second", "third", "fourth", "hero"]
 
 function checkDeath(){
-    if(health_bar.health==0){
+    if(health_bar.health==health_bar.maxHealth){
         document.getElementById("gameover").style.visibility="visible"
     }
 }
@@ -242,6 +238,8 @@ class Token{
         Footmen.ids = [...FOOTMEN_IDS]
         Footmen.positions = [...FOOTMEN_POSITIONS]
         document.getElementById("backdrop").innerHTML=""
+        document.getElementById("gameover").style.visibility="hidden"
+
     }
     
     constructor(Invoker){
@@ -250,7 +248,7 @@ class Token{
         this.img = img
         this.isBlocking=false
         this.baseImg="./images/standing-min.png"
-
+        this.isRunning=false
         img.style.height="450px"
         img.style.position="absolute"
         img.style.top=NINJA_HEIGHT
@@ -307,7 +305,7 @@ class Token{
         function move() {
           let left = parseInt(img.style.left) || 0;
           let newLeft = left + (1 * direction);
-          if (newLeft > -150 && newLeft < 1150){
+          if (newLeft > -150 && newLeft < 900){
               img.style.left = `${newLeft}px`;
           }
         }
@@ -353,29 +351,30 @@ class Token{
     walk_left(n=1){this.walkLeft(n)}
     walkleft(n=1){this.walkLeft(n)}
     
-    throwStar(direction="left"){
+    throwStar(direction="left"){        
+
         if(this.isRunning)return
         this.isRunning=true
         if (this.id=="hero"){
             console.log("Our Hero can not throw stars")
             return}
         let img = document.getElementById(this.id);
-        let newImg = img.cloneNode()
-        newImg.classList.add("throwing")
+        // let newImg = img.cloneNode()
+        img.classList.add("throwing")
         if (direction=="left"){
-            newImg.src="./images/right-arm-throw-min.gif"
+            img.src="./images/right-arm-throw-min.gif"
         }else{
-            newImg.src="./images/left-arm-throw-min.gif"
+            img.src="./images/left-arm-throw-min.gif"
         }
-        this.backdrop.removeChild(img)
-        this.backdrop.appendChild(newImg)
-        img = newImg
+        // this.backdrop.removeChild(img)
+        // this.backdrop.appendChild(newImg)
+        // img = img
         if (direction == "left"){
-            img.insertAdjacentHTML("afterend","<img src='./images/throwstar.gif' class='starLeft' id='star'>")
+            img.insertAdjacentHTML("afterend",`<img src='./images/throwstar.gif' class='starLeft' id='star-${this.id}'>`)
         }else{
-            img.insertAdjacentHTML("afterend","<img src='./images/throwstar.gif' class='starRight' id='star'>")
+            img.insertAdjacentHTML("afterend",`<img src='./images/throwstar.gif' class='starRight' id='star-${this.id}'>`)
         }
-        let star = document.getElementById("star")
+        let star = document.getElementById(`star-${this.id}`)
         star.style.height="50px"
         star.style.position="absolute"
         star.style.top="600px"
@@ -390,9 +389,10 @@ class Token{
         const intervalId=setInterval(()=>{
             let endLoop=()=>{    
                 clearInterval(intervalId)
-                newImg.classList.remove("throwing")
+                img.classList.remove("throwing")
                 star.remove()
                 this.isRunning=false
+
             }
 
             const heroOnLeft=()=>{
@@ -402,14 +402,17 @@ class Token{
                     return false
                 
             }
-
-            if((hero&&direction=="left" && parseInt(star.style.left)<=parseInt(hero.style.left)+200 )||(hero&&direction=="right" && parseInt(star.style.left)>=parseInt(hero.style.left)+50)){
-                if (hero.classList.contains("blocking")){
-                    console.log("blocked")
-                    endLoop()
-                    return
-                }
+            if(parseInt(star.style.left)<0||parseInt(star.style.left)>950){
+                endLoop()
+                return
             }
+
+            // if((hero&&direction=="left" && parseInt(star.style.left)<=parseInt(hero.style.left)+200 )||(hero&&direction=="right" && parseInt(star.style.left)>=parseInt(hero.style.left)+50)){
+            //     if (hero.classList.contains("blocking")){
+            //         endLoop()
+            //         return
+            //     }
+            // }
 
             if(hero&&direction=="left" && heroOnLeft() && parseInt(star.style.left)<=parseInt(hero.style.left)+150){
                 //hit the hero
@@ -433,7 +436,7 @@ class Token{
             }else if(parseInt(star.style.left)>=1050 ||parseInt(star.style.left)<=-50){
                 endLoop()
             }
-            const liveStar=document.getElementById("star")
+            const liveStar=document.getElementById(`star-${this.id}`)
             if(liveStar){
 
                 let left=parseInt(liveStar.style.left)
@@ -560,7 +563,15 @@ class Token{
 }
 
 
-
+function reset(){
+    window.start_clan=[]
+    window.danny=null
+    window.shedder=null
+    window.bebop=null
+    window.rocksteady=null
+    health_bar.health=0
+    Token.reset()
+}
 
 class Hero extends Token{
     
@@ -651,4 +662,126 @@ class Footmen extends Token{
         Footmen.positions.push(this.position)
     }
 }
+window.start_clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
+window.danny=start_clan[0]
+window.shedder=start_clan[1]
+window.bebop=start_clan[2]
+window.rocksteady=start_clan[3]
 
+function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
+function gameInfo(){
+    console.log(`%cYour Hero has been made for you`,"color: #8FD129")
+    console.log(`%cYour Hero name:`,"color: #8FD129");
+    console.log("%cyoshi","color: #ED1C28")
+    console.log(`%cFootclan Names:`,"color: #8FD129");
+    console.log("%cbebop\nrocksteady\ndanny\nshedder","color: #ED1C28")
+}
+
+function level1(){
+    // window.location.reload();
+    reset()
+    gameInfo()
+    const clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
+    window.danny=clan[0]
+    window.shedder=clan[1]
+    window.bebop=clan[2]
+    window.rocksteady=clan[3]
+    window.yoshi=new Hero()
+    const ACTIONS=["throwStarLeft()", "throwStarRight()","walkLeft(4)","walkRight(4)"]
+    
+    const intervalId=setTimeout(setInterval(()=>{
+
+        if (health_bar.health<health_bar.maxHealth){
+            eval("clan[randInt(0,clan.length)]."+ACTIONS[randInt(0,ACTIONS.length)])
+            for(let footman of clan){
+                if (!footman.img){
+                    clan.splice(clan.indexOf(footman),1)
+                }
+            }
+
+        }else{
+            clearInterval(intervalId)
+        }
+
+    },700),1000)
+}
+
+
+
+function level2(){
+    // window.location.reload();
+    reset()
+    gameInfo()
+    const clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
+    window.danny=clan[0]
+    window.shedder=clan[1]
+    window.bebop=clan[2]
+    window.rocksteady=clan[3]
+    window.yoshi=new Hero()
+    const ACTIONS_RIGHT=["throwStarRight()","walkRight(4)"]
+    const ACTIONS_LEFT=["throwStarLeft()","walkLeft(4)"]
+
+    const intervalId=setTimeout(setInterval(()=>{
+
+        if (health_bar.health<health_bar.maxHealth){
+            let enemy=clan[randInt(0,clan.length)]
+
+            if(parseInt(enemy.img.style.left) < parseInt(window.yoshi.img.style.left)){
+                console.log(enemy+"."+ACTIONS_RIGHT[randInt(0,ACTIONS_RIGHT.length)])
+                eval("enemy."+ACTIONS_RIGHT[randInt(0,ACTIONS_RIGHT.length)])
+            }else{
+                eval("enemy."+ ACTIONS_LEFT[randInt(0,ACTIONS_LEFT.length)])
+            }
+            for(let footman of clan){
+                if (!footman.img){
+                    clan.splice(clan.indexOf(footman),1)
+                }
+            }
+
+        }else{
+            clearInterval(intervalId)
+        }
+
+    },550),1000)
+}
+
+function level3(){
+    // window.location.reload();
+    reset()
+    gameInfo()
+    const clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
+    window.danny=clan[0]
+    window.shedder=clan[1]
+    window.bebop=clan[2]
+    window.rocksteady=clan[3]
+    window.yoshi=new Hero()
+    const ACTIONS_RIGHT=["throwStarRight()","walkRight(4)"]
+    const ACTIONS_LEFT=["throwStarLeft()","walkLeft(4)"]
+    startRaid()
+    const intervalId=setTimeout(setInterval(()=>{
+
+        if (health_bar.health<health_bar.maxHealth){
+            let enemy=clan[randInt(0,clan.length)]
+
+            if(parseInt(enemy.img.style.left) < parseInt(window.yoshi.img.style.left)){
+                eval("enemy."+ACTIONS_RIGHT[randInt(0,ACTIONS_RIGHT.length)])
+            }else{
+
+                eval("enemy."+ ACTIONS_LEFT[randInt(0,ACTIONS_LEFT.length)])
+            }
+            for(let footman of clan){
+                if (!footman.img){
+                    clan.splice(clan.indexOf(footman),1)
+                }
+            }
+
+        }else{
+            clearInterval(intervalId)
+            stopRaid()
+        }
+
+    },550),1000)
+}
