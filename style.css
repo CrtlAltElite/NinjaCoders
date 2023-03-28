@@ -1,5 +1,5 @@
 #backdrop{
-    background-image: url(../images/backdrop-min.jpg);
+    background-image: url(./images/backdrop-min.jpg);
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
@@ -18,7 +18,7 @@ body{
     top:0px;
     left:0px;
     opacity: 85%;
-    background-image: linear-gradient(#2827276f, #4949496F), url(../images/gameover.jpg);
+    background-image: linear-gradient(#2827276f, #4949496F), url(./images/gameover.jpg);
     background-repeat: no-repeat;
     background-position: center;
     z-index: 99999;
