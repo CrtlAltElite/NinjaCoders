@@ -61,7 +61,7 @@ class Bomb{
         this.position="absolute"
         this.node = document.createElement("img")
         this.node.style.width="50px"
-        this.node.zIndex="999999999"
+        this.node.style.zIndex="999999999"
         this.id = "bomb"
         this.command = COMMANDS[Math.floor(Math.random()*COMMANDS.length)]
         this.setAttr()
