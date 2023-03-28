@@ -151,8 +151,8 @@ class Token{
     }
 
     walk(n = 1, direction=-1) {
-        if(Token.isRunning)return
-        Token.isRunning=true
+        if(this.isRunning)return
+        this.isRunning=true
         let baseimg = document.getElementById(this.id);
         let img = baseimg.cloneNode()
         if (this.id == "hero"){
@@ -209,7 +209,7 @@ class Token{
             this.backdrop.appendChild(this.img)
             this.backdrop.removeChild(img)
             // img.replaceWith(newImg)
-            Token.isRunning=false
+            this.isRunning=false
             return
           }
           move()
@@ -231,8 +231,8 @@ class Token{
     walkleft(n=1){this.walkLeft(n)}
   
     throwStar(direction="left"){
-        if(Token.isRunning)return
-        Token.isRunning=true
+        if(this.isRunning)return
+        this.isRunning=true
         if (this.id=="hero"){
             console.log("Our Hero can not throw stars")
             return}
@@ -270,7 +270,7 @@ class Token{
                 clearInterval(intervalId)
                 newImg.classList.remove("throwing")
                 star.remove()
-                Token.isRunning=false
+                this.isRunning=false
             }
             function checkDeath(){
                 if(health_bar.health==0){
@@ -321,8 +321,8 @@ class Token{
 
     attack(enemy){
         if(this.id!=="hero"){console.log("Only our Hero has this ability");return;}
-        if(Token.isRunning)return
-        Token.isRunning=true
+        if(this.isRunning)return
+        this.isRunning=true
         if (enemy == undefined || enemy==null){
             console.log("I need to know what enemy to attack")
             return
@@ -371,7 +371,7 @@ class Token{
                 enemy.remove()
                 this.backdrop.removeChild(newImg)  
                 this.backdrop.appendChild(this.img)
-                Token.isRunning=false
+                this.isRunning=false
             }
             if(direction==="right"){
                 if (parseInt(knife.style.left) >= parseInt(enemy.img.style.left) + 25 ||parseInt(knife.style.left)<=0||parseInt(knife.style.left)>=1000) {
