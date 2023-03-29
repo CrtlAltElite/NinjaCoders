@@ -218,13 +218,100 @@ function actions(){
     console.log("%clevel3()","color: #ED1C28")
     
 }
+function collision(img1,img2){
+    // get the bounding rectangles of the images
+    const rect1 = img1.getBoundingClientRect();
+    const rect2 = img2.getBoundingClientRect();
+    // calculate the overlapping area between the images
+    const overlapLeft = Math.max(rect1.left, rect2.left);
+    const overlapTop = Math.max(rect1.top, rect2.top);
+    const overlapRight = Math.min(rect1.right, rect2.right);
+    const overlapBottom = Math.min(rect1.bottom, rect2.bottom);
+    // check if the overlapping area is non-zero and contains non-transparent pixels
+    if (overlapLeft < overlapRight && overlapTop < overlapBottom) {
+    // create a temporary canvas to draw the images onto
+    const canvas = document.createElement('canvas');
+    canvas.width = overlapRight - overlapLeft;
+    canvas.height = overlapBottom - overlapTop;
+    const ctx = canvas.getContext('2d');
+    // draw img1 onto the canvas
+    const x1 = rect1.left - overlapLeft;
+    const y1 = rect1.top - overlapTop;
+    ctx.drawImage(img1, x1, y1);
+    // draw img2 onto the canvas
+    const x2 = rect2.left - overlapLeft;
+    const y2 = rect2.top - overlapTop;
+    ctx.drawImage(img2, x2, y2);
+    // get the image data of the overlapping area
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    // check if any non-transparent pixels exist in the overlapping area
+    for (let i = 3; i < data.length; i += 4) {
+        if (data[i] === 0) {
+        return true;
+        }
+    }
+    }
+    return false;
+}
 
-
+function outOfBounds(imgNode, containerNode) {
+    // Get the boundaries of the container element
+    const containerRect = containerNode.getBoundingClientRect();
+    // Get the boundaries of the image element
+    const imgRect = imgNode.getBoundingClientRect();
+    // Get the canvas and context for the image
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    const imgWidth = imgNode.width;
+    const imgHeight = imgNode.height;
+    // Set the canvas size to match the image size
+    canvas.width = imgWidth;
+    canvas.height = imgHeight;
+    // Draw the image onto the canvas
+    context.drawImage(imgNode, 0, 0, imgWidth, imgHeight);
+    // Get the pixel data for the image
+    const imgData = context.getImageData(0, 0, imgWidth, imgHeight).data;
+    // Get the pixel data for the background image
+    const bgImage = getComputedStyle(containerNode).backgroundImage;
+    const bgImageSrc = bgImage.slice(4, -1).replace(/"/g, "");
+    const bgImg = new Image();
+    bgImg.src = bgImageSrc;
+    const bgImgWidth = containerRect.width;
+    const bgImgHeight = containerRect.height;
+    // Set the canvas size to match the background image size
+    canvas.width = bgImgWidth;
+    canvas.height = bgImgHeight;
+    // Draw the background image onto the canvas
+    context.drawImage(bgImg, 0, 0, bgImgWidth, bgImgHeight);
+    // Get the pixel data for the background image
+    const bgData = context.getImageData(0, 0, bgImgWidth, bgImgHeight).data;
+    // Check if any non-transparent pixels of the image are going outside the container
+    for (let i = 0; i < imgData.length; i += 4) {
+      // Check if the pixel is not transparent in the image
+      if (imgData[i + 3] !== 0) {
+        // Calculate the x and y coordinates of the pixel relative to the container
+        const x = imgRect.left - containerRect.left + (i / 4) % imgWidth;
+        const y = imgRect.top - containerRect.top + Math.floor(i / (imgWidth * 4));
+        // Check if the pixel is outside the container or the background image
+        if (
+          x < 0 || x >= containerRect.width || y < 0 || y >= containerRect.height ||
+          bgData[4 * (y * bgImgWidth + x) + 3] === 0
+        ) {
+          return true;
+        }
+      }
+    }
+    // If we reach this point, no non-transparent pixels of the image are going outside the container
+    return false;
+  }
 const POSITIONS=["400px", "500px", "600px", "700px", "50px"]
 const IDS=["first" ,"second", "third", "fourth", "hero"]
 
 function checkDeath(){
     if(health_bar.health==health_bar.maxHealth){
+        reset()
+        stopRaid()
         document.getElementById("gameover").style.visibility="visible"
     }
 }
@@ -282,14 +369,14 @@ class Token{
         if (this.id == "hero"){
             img.src="./images/hero-walk-min.gif"
         }else {
-            img.src = "./images/animate-walking-min.gif";
+            img.src = "./images/animate-walking-opt.gif";
         }
 
         let top = parseInt(img.style.top)
         let newTop=top
-        if (this.id !=="hero"){
-            newTop+=+15
-        }
+        // if (this.id !=="hero"){
+        //     newTop+=+15
+        // }
         
         let left = parseInt(img.style.left)
         let newLeft=left+25
@@ -308,8 +395,13 @@ class Token{
         function move() {
           let left = parseInt(img.style.left) || 0;
           let newLeft = left + (1 * direction);
-          if (newLeft > -150 && newLeft < 900){
+          if (newLeft > -15 && newLeft < 1000-130){
               img.style.left = `${newLeft}px`;
+          }else if(newLeft > 1000-130){
+            img.style.left = `${1000-131}px`;
+
+          }else if(newLeft <= -15){
+            img.style.left = `${-14}px`;
           }
         }
       
@@ -318,7 +410,7 @@ class Token{
             clearInterval(this.walkIntervalId)
             // let newImg=img.cloneNode()
 
-            // img.src = this.baseImg
+            img.src = this.baseImg
             if(direction>0){
                 img.left
             }else{
@@ -406,7 +498,7 @@ class Token{
                     return false
                 
             }
-            if(parseInt(star.style.left)<0||parseInt(star.style.left)>950){
+            if(outOfBounds(star,this.backdrop)){
                 endLoop()
                 return
             }
@@ -417,8 +509,8 @@ class Token{
             //         return
             //     }
             // }
-
-            if(hero&&direction=="left" && heroOnLeft() && parseInt(star.style.left)<=parseInt(hero.style.left)+150){
+        
+            if(hero&&direction=="left" && heroOnLeft() && collision(hero,star)){
                 //hit the hero
                 if (!hero.classList.contains("block-right")){
                     hero.src='./images/damage_animate.gif'
@@ -431,7 +523,7 @@ class Token{
                     }
                 }
                 endLoop()
-            }else if(hero&&direction=="right" && !heroOnLeft() && parseInt(star.style.left)>=parseInt(hero.style.left)+65){
+            }else if(hero&&direction=="right" && !heroOnLeft() && collision(hero,star)){
                 //hit the hero
 
                 if (!hero.classList.contains("block-left")){
@@ -521,11 +613,11 @@ class Token{
                 this.isRunning=false
             }
             if(direction==="right"){
-                if (parseInt(knife.style.left) >= parseInt(enemy.img.style.left) + 25 ||parseInt(knife.style.left)<=0||parseInt(knife.style.left)>=1200) {
+                if (collision(enemy.img,knife) ||parseInt(knife.style.left)<=0||parseInt(knife.style.left)>=1200) {
                     endLoop()
                 }
             }else if (direction ==="left"){
-                if (parseInt(knife.style.left) <= parseInt(enemy.img.style.left) + 115 ||parseInt(knife.style.left)<=0||parseInt(knife.style.left)>=1200) {
+                if (collision(enemy.img,knife) ||parseInt(knife.style.left)<=0||parseInt(knife.style.left)>=1200) {
                     endLoop()
                 }       
             }
@@ -621,7 +713,7 @@ class Hero extends Token{
         if(   (bombList.length>0 && direction !==-1 && bombList[0].command==="Walk Right") || 
         (bombList.length>0 && direction==-1 && bombList[0].command==="Walk Left")){
             bombList[0].destroy()
-            if(!this.img.classList.contains("tut-bomb")){
+            if(!this.img.classList.contains("tut-bomb") && this.id==="first"){
 
                 this.img.classList.add("tut-bomb")
             }
@@ -705,9 +797,13 @@ class Footmen extends Token{
     remove(){
         this.img.remove()
         Footmen.ids.push(this.id)
-        Footmen.positions.push(this.position)
+        if(!Footmen.positions.includes(this.position)){
+            Footmen.positions.push(this.position)
+        }
+
     }
 }
+function refresh(){window.location.reload()}
 // window.start_clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
 // window.danny=start_clan[0]
 // window.shedder=start_clan[1]
@@ -984,7 +1080,7 @@ function tutorial5(){
 
     const tutorial5Id=setInterval(
         ()=>{
-            if (document.getElementById("first")===null){
+            if (!document.documentElement.contains(window.danny.img)){
                 clearTimeout(tutorial5IdStars)
                 clearInterval(tutorial5Id)
                 tutorial6()
@@ -1040,7 +1136,7 @@ function tutorial7() {
     setTimeout(()=>{
     
         const intervalId=setInterval(()=>{
-
+        if(clan.length=0){ clearInterval(intervalId) }
         if (health_bar.health<health_bar.maxHealth){
             let enemy=clan[randInt(0,clan.length)]
 
@@ -1060,7 +1156,7 @@ function tutorial7() {
             clearInterval(intervalId)
         }
 
-    },550)},5000)
+    },850)},5000)
 
     const finishId=setInterval(
         ()=>{

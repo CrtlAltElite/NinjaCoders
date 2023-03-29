@@ -2,6 +2,15 @@
     font-family: tmnt;
     src: url(./fonts/tmnt.ttf);
 }
+@font-face {
+    font-family: tmnt2;
+    src: url(./fonts/tmnt2.ttf);
+}
+@font-face {
+    font-family: tmnt3;
+    src: url(./fonts/tmnt3.otf);
+}
+
 
 #body{
     max-height: 100vh;
@@ -14,13 +23,16 @@
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-family: "tmnt";
-    font-size: 40pt;
+    font-family: "tmnt3";
+    font-size: 35pt;
     z-index: 9999999999999999999999999999999999999;
 }
 #logo{
     width:150px;
 }
+/* img{
+    mix-blend-mode: multiply;
+} */
 #backdrop{
     overflow: hidden;
     background-image: url(./images/backdrop-min.jpg);
