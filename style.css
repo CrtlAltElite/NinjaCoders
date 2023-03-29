@@ -1,6 +1,28 @@
+@font-face {
+    font-family: tmnt;
+    src: url(./fonts/tmnt.ttf);
+}
 
-
+#body{
+    max-height: 100vh;
+    overflow: hidden;
+}
+#header{
+    position: absolute;
+    top:0;
+    background: linear-gradient(90deg, rgba(255,238,166,1) 10%, rgba(21,198,160,1) 70%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: "tmnt";
+    font-size: 40pt;
+    z-index: 9999999999999999999999999999999999999;
+}
+#logo{
+    width:150px;
+}
 #backdrop{
+    overflow: hidden;
     background-image: url(./images/backdrop-min.jpg);
     background-repeat: no-repeat;
     background-position: center;

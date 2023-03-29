@@ -48,7 +48,7 @@ function sleep(milliseconds) {
   
   
 
-const COMMANDS=[ "Hero Block", "Hero Walk Left", "Hero Walk Right", "Hero Throw Knife"]
+const COMMANDS=[ "Block", "Walk Left", "Walk Right", "Throw Knife"]
 
 let bombList=[]
 
@@ -177,7 +177,7 @@ function actions(){
     console.log(`%c- or -`,"color: #8FD129");
     console.log("%yoshi.walkRight()","color: #ED1C28")
     console.log(`%cYou can make them walk farther by passing a number of steps as an argument to the move function:`,"color: #8FD129");
-    console.log("%yoshi.walkLeft(2)","color: #ED1C28")
+    console.log("%yoshi.walkLeftPOSITIONS(2)","color: #ED1C28")
     console.log(`%c- or -`,"color: #8FD129");
     console.log("%yoshi.walkRight(2)","color: #ED1C28")
 
@@ -243,7 +243,6 @@ class Token{
         Footmen.positions = [...FOOTMEN_POSITIONS]
         document.getElementById("backdrop").innerHTML=""
         document.getElementById("gameover").style.visibility="hidden"
-
     }
     
     constructor(Invoker){
@@ -278,11 +277,11 @@ class Token{
     walk(n = 1, direction=-1) {
         if(this.isRunning)return
         this.isRunning=true
-        let baseimg = document.getElementById(this.id);
-        let img = baseimg.cloneNode()
+        let img = document.getElementById(this.id);
+        // let img = baseimg.cloneNode()
         if (this.id == "hero"){
             img.src="./images/hero-walk-min.gif"
-        }else{
+        }else {
             img.src = "./images/animate-walking-min.gif";
         }
 
@@ -302,8 +301,8 @@ class Token{
         if(direction>0){
             img.style.transform="scaleX(-1)"
         }
-        this.backdrop.appendChild(img)
-        this.backdrop.removeChild(baseimg)
+        // this.backdrop.appendChild(img)
+        // this.backdrop.removeChild(baseimg)
 
         let i = 0;
         function move() {
@@ -314,25 +313,25 @@ class Token{
           }
         }
       
-        const intervalId = setInterval(() => {
+        this.walkIntervalId = setInterval(() => {
           if (i >= n * 25) {
-            clearInterval(intervalId)
-            let newImg=img.cloneNode()
+            clearInterval(this.walkIntervalId)
+            // let newImg=img.cloneNode()
 
-            newImg.src = this.baseImg
+            // img.src = this.baseImg
             if(direction>0){
-                newImg.left
+                img.left
             }else{
-                newImg.left=`${parseInt(newImg.left)-20}px`
+                img.left=`${parseInt(img.left)-20}px`
             }
             
-            newImg.style.top = NINJA_HEIGHT
+            img.style.top = NINJA_HEIGHT
             if(direction>0){
-                newImg.style.transform="scaleX(1)"
+                img.style.transform="scaleX(1)"
             }
-            this.img=newImg
-            this.backdrop.appendChild(this.img)
-            this.backdrop.removeChild(img)
+            // this.img=img
+            // this.backdrop.appendChild(this.img)
+            // this.backdrop.removeChild(img)
             // img.replaceWith(newImg)
             this.isRunning=false
             return
@@ -365,21 +364,22 @@ class Token{
         let img = document.getElementById(this.id);
         // let newImg = img.cloneNode()
         img.classList.add("throwing")
-        if (direction=="left"){
+        if (direction=="left" ){
             img.src="./images/right-arm-throw-min.gif"
-        }else{
+        }else {
             img.src="./images/left-arm-throw-min.gif"
         }
         // this.backdrop.removeChild(img)
         // this.backdrop.appendChild(newImg)
         // img = img
+        let star_rand=randInt(1,1000000)
         if (direction == "left"){
-            img.insertAdjacentHTML("afterend",`<img src='./images/throwstar.gif' class='starLeft' id='star-${this.id}'>`)
+            img.insertAdjacentHTML("afterend",`<img src='./images/throwstar.gif' class='starLeft' id='star-${this.id}-${star_rand}'>`)
         }else{
-            img.insertAdjacentHTML("afterend",`<img src='./images/throwstar.gif' class='starRight' id='star-${this.id}'>`)
+            img.insertAdjacentHTML("afterend",`<img src='./images/throwstar.gif' class='starRight' id='star-${this.id}-${star_rand}'>`)
         }
-        let star = document.getElementById(`star-${this.id}`)
-        star.style.height="50px"
+        let star = document.getElementById(`star-${this.id}-${star_rand}`)
+        star.style.height="25px"
         star.style.position="absolute"
         star.style.top="600px"
         let left
@@ -390,9 +390,9 @@ class Token{
         }
         star.style.left=`${left}px`
         let hero=document.getElementById("hero")
-        const intervalId=setInterval(()=>{
+        this.starIntervalId=setInterval(()=>{
             let endLoop=()=>{    
-                clearInterval(intervalId)
+                clearInterval(this.starIntervalId)
                 img.classList.remove("throwing")
                 star.remove()
                 this.isRunning=false
@@ -448,7 +448,7 @@ class Token{
             }else if(parseInt(star.style.left)>=1050 ||parseInt(star.style.left)<=-50){
                 endLoop()
             }
-            const liveStar=document.getElementById(`star-${this.id}`)
+            const liveStar=document.getElementById(`star-${this.id}-${star_rand}`)
             if(liveStar){
 
                 let left=parseInt(liveStar.style.left)
@@ -479,29 +479,29 @@ class Token{
             console.log("Only Our Hero Can Throw Knives")
             return
         }
-        let newImg = hero.cloneNode()
+        // let newImg = hero.cloneNode()
 
-        this.backdrop.removeChild(this.img)
-        this.backdrop.appendChild(newImg)
+        // this.backdrop.removeChild(this.img)
+        // this.backdrop.appendChild(newImg)
         let direction
         if(hero.style.left >= enemy.img.style.left){
             //throw toward the left
             direction = "left"
-            newImg.src="./images/hero-throw-knife-left-min.gif"
-            newImg.insertAdjacentHTML("afterend","<img src='./images/knife-left-min.gif' class='knifeLeft' id='knife'>")
+            hero.src="./images/hero-throw-knife-left-min.gif"
+            hero.insertAdjacentHTML("afterend","<img src='./images/knife-left-min.gif' class='knifeLeft' id='knife'>")
 
         }else{
             //throw toward the right
             direction="right"
-            newImg.src="./images/hero-throw-knife-right-min.gif"
-            newImg.insertAdjacentHTML("afterend","<img src='./images/knife-right-min.gif' class='knifeRight' id='knife'>")
+            hero.src="./images/hero-throw-knife-right-min.gif"
+            hero.insertAdjacentHTML("afterend","<img src='./images/knife-right-min.gif' class='knifeRight' id='knife'>")
         }
 
         let knife = document.getElementById("knife")
         if(direction == "right"){
-            knife.style.left = `${parseInt(newImg.style.left)+175}px`
+            knife.style.left = `${parseInt(hero.style.left)+175}px`
         }else if (direction=="left"){
-            knife.style.left = `${parseInt(newImg.style.left)+75}px`
+            knife.style.left = `${parseInt(hero.style.left)+75}px`
 
         }
 
@@ -516,16 +516,16 @@ class Token{
                 clearInterval(intervalId)
                 knife.remove()
                 enemy.remove()
-                this.backdrop.removeChild(newImg)  
-                this.backdrop.appendChild(this.img)
+                // this.backdrop.removeChild(newImg)  
+                // this.backdrop.appendChild(this.img)
                 this.isRunning=false
             }
             if(direction==="right"){
-                if (parseInt(knife.style.left) >= parseInt(enemy.img.style.left) + 25 ||parseInt(knife.style.left)<=0||parseInt(knife.style.left)>=1000) {
+                if (parseInt(knife.style.left) >= parseInt(enemy.img.style.left) + 25 ||parseInt(knife.style.left)<=0||parseInt(knife.style.left)>=1200) {
                     endLoop()
                 }
             }else if (direction ==="left"){
-                if (parseInt(knife.style.left) <= parseInt(enemy.img.style.left) + 115 ||parseInt(knife.style.left)<=0||parseInt(knife.style.left)>=1000) {
+                if (parseInt(knife.style.left) <= parseInt(enemy.img.style.left) + 115 ||parseInt(knife.style.left)<=0||parseInt(knife.style.left)>=1200) {
                     endLoop()
                 }       
             }
@@ -569,7 +569,8 @@ class Token{
 
     remove(){
         this.img.remove()
-        
+        clearInterval(this.walkIntervalId)
+        clearInterval(this.starIntervalId)
     }
 
 }
@@ -577,13 +578,16 @@ class Token{
 
 function reset(){
     window.start_clan=[]
+    removeAll()
     window.danny=null
     window.shedder=null
     window.bebop=null
     window.rocksteady=null
     window.yoshi=null
+    window.foot=null
     health_bar.reset()
     Token.reset()
+    document.getElementById("backdrop").innerHTML=""
 }
 
 class Hero extends Token{
@@ -596,7 +600,7 @@ class Hero extends Token{
     }
 
     attack(enemy){
-        if(  bombList.length>0 && bombList[0].command==="Hero Throw Knife"){
+        if(  bombList.length>0 && bombList[0].command==="Throw Knife"){
             bombList[0].destroy()
             if(!this.img.classList.contains("tut-bomb")){
                 this.img.classList.add("tut-bomb")
@@ -614,8 +618,8 @@ class Hero extends Token{
             this.img.classList.add("tut-lw")
         }
 
-        if(   (bombList.length>0 && direction !==-1 && bombList[0].command==="Hero Walk Right") || 
-        (bombList.length>0 && direction==-1 && bombList[0].command==="Hero Walk Left")){
+        if(   (bombList.length>0 && direction !==-1 && bombList[0].command==="Walk Right") || 
+        (bombList.length>0 && direction==-1 && bombList[0].command==="Walk Left")){
             bombList[0].destroy()
             if(!this.img.classList.contains("tut-bomb")){
 
@@ -627,13 +631,17 @@ class Hero extends Token{
     }
 
     remove(){
+        
         this.img.remove()
         Hero.ids.push(this.id)
         Hero.positions.push(this.position)
+        while(document.getElementById(this.id)){
+            document.getElementById(this.id).remove()
+        }
     }
 
     block(dir="right"){
-        if(  bombList.length>0 && bombList[0].command==="Hero Block"){
+        if(  bombList.length>0 && bombList[0].command==="Block"){
             bombList[0].destroy()
             if(!this.img.classList.contains("tut-bomb")){
 
@@ -673,8 +681,10 @@ class Footmen extends Token{
     
     static ids = [...FOOTMEN_IDS]
     static positions = [...FOOTMEN_POSITIONS]
+    static allFootmen=[]
     constructor(){
         super(Footmen)
+        Footmen.allFootmen.push(this)
     }
 
     throwStar(direction){
@@ -716,8 +726,37 @@ function gameInfo(){
     console.log("%cbebop\nrocksteady\ndanny\nshedder","color: #ED1C28")
 }
 
+function removeAll(){
+    delete window.danny
+    delete window.shedder
+    delete window.bebop
+    delete window.rocksteady
+    delete window.yoshi
+    delete window.foot
+
+    window.danny?.remove()
+    window.shedder?.remove()
+    window.bebop?.remove()
+    window.rocksteady?.remove()
+    window.yoshi?.remove()
+    window.foot?.remove()
+    for(let footman of Footmen.allFootmen){
+        footman.remove()
+    }
+}
+let intervalIdL1
+let intervalIdL2
+let intervalIdL3
+function clearMyIntervals(){
+    clearInterval(intervalIdL1)
+    clearInterval(intervalIdL2)
+    clearInterval(intervalIdL3)
+
+
+}
 function level1(){
- 
+    clearMyIntervals()
+    removeAll()
     reset()
     gameInfo()
     const clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
@@ -728,7 +767,7 @@ function level1(){
     window.yoshi=new Hero()
     const ACTIONS=["throwStarLeft()", "throwStarRight()","walkLeft(4)","walkRight(4)"]
     
-    const intervalId=setTimeout(setInterval(()=>{
+    setTimeout(()=>{intervalIdL1=setInterval(()=>{
 
         if (health_bar.health<health_bar.maxHealth){
             eval("clan[randInt(0,clan.length)]."+ACTIONS[randInt(0,ACTIONS.length)])
@@ -739,16 +778,20 @@ function level1(){
             }
 
         }else{
-            clearInterval(intervalId)
+            clearInterval(intervalIdL1)
         }
 
-    },700),1000)
+    },750)},1000)
 }
 
 
 
 function level2(){
     // window.location.reload();
+    clearMyIntervals()
+
+    removeAll()
+
     reset()
     gameInfo()
     const clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
@@ -760,7 +803,7 @@ function level2(){
     const ACTIONS_RIGHT=["throwStarRight()","walkRight(4)"]
     const ACTIONS_LEFT=["throwStarLeft()","walkLeft(4)"]
 
-    const intervalId=setTimeout(setInterval(()=>{
+    setTimeout(()=>{intervalIdL2=setInterval(()=>{
 
         if (health_bar.health<health_bar.maxHealth){
             let enemy=clan[randInt(0,clan.length)]
@@ -777,14 +820,17 @@ function level2(){
             }
 
         }else{
-            clearInterval(intervalId)
+            clearInterval(intervalIdL2)
         }
 
-    },550),1000)
+    },500)},1000)
 }
 
 function level3(){
     // window.location.reload();
+    clearMyIntervals()
+    removeAll()
+
     reset()
     gameInfo()
     const clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
@@ -796,7 +842,7 @@ function level3(){
     const ACTIONS_RIGHT=["throwStarRight()","walkRight(4)"]
     const ACTIONS_LEFT=["throwStarLeft()","walkLeft(4)"]
     startRaid()
-    const intervalId=setTimeout(setInterval(()=>{
+    setTimeout(()=>{intervalIdL3=setInterval(()=>{
 
         if (health_bar.health<health_bar.maxHealth){
             let enemy=clan[randInt(0,clan.length)]
@@ -814,11 +860,11 @@ function level3(){
             }
 
         }else{
-            clearInterval(intervalId)
+            clearInterval(intervalIdL3)
             stopRaid()
         }
 
-    },550),1000)
+    },500)},1000)
 }
 
 function tutorial(){
