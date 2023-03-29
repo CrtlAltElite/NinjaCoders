@@ -128,8 +128,8 @@ class Bomb{
     destroy(){
         this.node.remove()
         clearInterval(this.goInt)
-        bombList=bombList.filter((bomb)=>bomb!==this)
-        document.getElementById("bomb-desc").remove()
+        // bombList=bombList.filter((bomb)=>bomb!==this)
+        document.getElementById("bomb-desc")?.remove()
     }
 
     stopRaid(){
@@ -227,30 +227,34 @@ function collision(img1,img2){
     const overlapTop = Math.max(rect1.top, rect2.top);
     const overlapRight = Math.min(rect1.right, rect2.right);
     const overlapBottom = Math.min(rect1.bottom, rect2.bottom);
-    // check if the overlapping area is non-zero and contains non-transparent pixels
+    // check if the overlapping area is non-zero
     if (overlapLeft < overlapRight && overlapTop < overlapBottom) {
-    // create a temporary canvas to draw the images onto
-    const canvas = document.createElement('canvas');
-    canvas.width = overlapRight - overlapLeft;
-    canvas.height = overlapBottom - overlapTop;
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    // draw img1 onto the canvas
-    const x1 = rect1.left - overlapLeft;
-    const y1 = rect1.top - overlapTop;
-    ctx.drawImage(img1, x1, y1);
-    // draw img2 onto the canvas
-    const x2 = rect2.left - overlapLeft;
-    const y2 = rect2.top - overlapTop;
-    ctx.drawImage(img2, x2, y2);
-    // get the image data of the overlapping area
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-    // check if any non-transparent pixels exist in the overlapping area
-    for (let i = 3; i < data.length; i += 4) {
-        if (data[i] === 0) {
-        return true;
-        }
-    }
+    // // create a temporary canvas to draw the images onto
+    return true
+    // const canvas = document.createElement('canvas');
+    // canvas.width = overlapRight - overlapLeft;
+    // canvas.height = overlapBottom - overlapTop;
+    // const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    // // draw img1 onto the canvas
+    // const x1 = rect1.left - overlapLeft;
+    // const y1 = rect1.top - overlapTop;    
+    // if(x1||y1==0){return}
+
+    // ctx.drawImage(img1, x1, y1);
+    // // draw img2 onto the canvas
+    // const x2 = rect2.left - overlapLeft;
+    // const y2 = rect2.top - overlapTop;
+    // if(x1||y1==0){return}
+    // ctx.drawImage(img2, x2, y2);
+    // // get the image data of the overlapping area
+    // const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    // const data = imageData.data;
+    // // check if any non-transparent pixels exist in the overlapping area
+    // for (let i = 3; i < data.length; i += 4) {
+    //     if (data[i] === 0) {
+    //     return true;
+    //     }
+    // }
     }
     return false;
 }
@@ -343,6 +347,10 @@ class Token{
         img.style.height="450px"
         img.style.position="absolute"
         img.style.top=NINJA_HEIGHT
+        if (Invoker ===Hero){
+            img.style.top=`${parseInt(NINJA_HEIGHT)-25}px`
+
+        }
         img.style.zIndex=99
         if (Invoker.positions.length>0){
             this.position=Invoker.positions.pop()
@@ -367,12 +375,12 @@ class Token{
         this.isRunning=true
         let img = document.getElementById(this.id);
         // let img = baseimg.cloneNode()
-        if (this.id == "hero"){
+        if (this.id == "hero" && img){
             img.src="./images/hero-walk-min.gif"
-        }else {
+        }else if(img){
             img.src = "./images/animate-walking-opt.gif";
         }
-
+        if(!img){return}
         let top = parseInt(img.style.top)
         let newTop=top
         // if (this.id !=="hero"){
@@ -456,10 +464,11 @@ class Token{
             return}
         let img = document.getElementById(this.id);
         // let newImg = img.cloneNode()
-        img.classList.add("throwing")
-        if (direction=="left" ){
+        if(!img){return}
+        img?.classList.add("throwing")
+        if (direction=="left" && img){
             img.src="./images/right-arm-throw-min.gif"
-        }else {
+        }else if(img) {
             img.src="./images/left-arm-throw-min.gif"
         }
         // this.backdrop.removeChild(img)
@@ -467,9 +476,9 @@ class Token{
         // img = img
         let star_rand=randInt(1,1000000)
         if (direction == "left"){
-            img.insertAdjacentHTML("afterend",`<img src='./images/throwstar.gif' class='starLeft' id='star-${this.id}-${star_rand}'>`)
+            img?.insertAdjacentHTML("afterend",`<img src='./images/throwstar.gif' class='starLeft' id='star-${this.id}-${star_rand}'>`)
         }else{
-            img.insertAdjacentHTML("afterend",`<img src='./images/throwstar.gif' class='starRight' id='star-${this.id}-${star_rand}'>`)
+            img?.insertAdjacentHTML("afterend",`<img src='./images/throwstar.gif' class='starRight' id='star-${this.id}-${star_rand}'>`)
         }
         let star = document.getElementById(`star-${this.id}-${star_rand}`)
         star.style.height="25px"
@@ -905,7 +914,7 @@ function level2(){
         if (health_bar.health<health_bar.maxHealth){
             let enemy=clan[randInt(0,clan.length)]
 
-            if(parseInt(enemy.img.style.left) < parseInt(window.yoshi.img.style.left)){
+            if(enemy?.img&& window.yoshi?.img &&parseInt(enemy?.img.style.left) < parseInt(window.yoshi?.img.style.left)){
                 eval("enemy."+ACTIONS_RIGHT[randInt(0,ACTIONS_RIGHT.length)])
             }else{
                 eval("enemy."+ ACTIONS_LEFT[randInt(0,ACTIONS_LEFT.length)])
@@ -944,7 +953,7 @@ function level3(){
         if (health_bar.health<health_bar.maxHealth){
             let enemy=clan[randInt(0,clan.length)]
 
-            if(parseInt(enemy.img.style.left) < parseInt(window.yoshi.img.style.left)){
+            if(enemy?.img && window.yoshi?.img && parseInt(enemy.img.style.left) < parseInt(window.yoshi.img.style.left)){
                 eval("enemy."+ACTIONS_RIGHT[randInt(0,ACTIONS_RIGHT.length)])
             }else{
 
