@@ -618,6 +618,7 @@ class Token{
             let endLoop=()=>{    
                 clearInterval(intervalId)
                 knife.remove()
+                enemy.alive=false
                 enemy.remove()
                 // this.backdrop.removeChild(newImg)  
                 // this.backdrop.appendChild(this.img)
@@ -901,7 +902,7 @@ function level1(){
             clearInterval(intervalIdL1)
         }
 
-    },750)},1000)
+    },1250)},1000)
 }
 
 
@@ -946,7 +947,7 @@ function level2(){
             clearInterval(intervalIdL2)
         }
 
-    },500)},1000)
+    },750)},1000)
 }
 
 function level3(){
@@ -990,7 +991,7 @@ function level3(){
             stopRaid()
         }
 
-    },500)},1000)
+    },750)},1000)
 }
 
 function tutorial(){
@@ -1168,8 +1169,11 @@ function tutorial7() {
     setTimeout(()=>{
     
         const intervalId=setInterval(()=>{
-        if(window.clan.length==0){ clearInterval(intervalId) }
-        if (health_bar.health<health_bar.maxHealth){
+            // console.log("interval")
+
+        if (health_bar.health<health_bar.maxHealth && !window.clan.length==0){
+            // console.log("main if")
+
             let enemy=window.clan[randInt(0,window.clan.length)]
 
             if(parseInt(enemy?.img.style.left) < parseInt(window.yoshi?.img.style.left)){
@@ -1179,14 +1183,18 @@ function tutorial7() {
                 eval("enemy."+ ACTIONS[randInt(0,ACTIONS.length)])
             }
             for(let footman of window.clan){
-                if (!footman?.img){
+                // console.log("loop")
+
+                if (!footman.alive){
                     window.clan.splice(window.clan.indexOf(footman),1)
                 }
             }
 
-        }else if(!health_bar.health<health_bar.maxHealth){
+        }else if(health_bar.maxHealth-health_bar.health===0){
+            // console.log("health")
             clearInterval(intervalId)
-        }else if (document.getElementById("first")===null&&document.getElementById("fourth")===null&&document.getElementById("third")===null&&document.getElementById("second")===null){
+        }else if (window.clan.length==0){
+            clearInterval(intervalId)
             console.clear()
             console.log("%cYou are Ready for your mission!","color:#8FD129; font-size:20px;")
             console.log("%cThere are three difficulties you can try","color:#8FD129;")
@@ -1209,7 +1217,7 @@ function tutorial7() {
             console.log("%clevel3()","color:#ED1C28;")
         }
 
-    },850)},5000)
+    },1500)},5000)
 
 
             
