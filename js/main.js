@@ -18,6 +18,11 @@ class Health{
             this.node.src=`./images/healthbar/health-${this.health}.png`
         }
     }
+
+    reset(){
+        this.health=0
+        this.node.src=`./images/healthbar/health-${this.health}.png`
+    }
     
 }
 
@@ -29,7 +34,7 @@ const HERO_IDS=["hero"]
 
 
 const health_bar = new Health()
-console.log(`%cType: "help()" to learn how to get started`,'font-size:25px; color:#8FD129')
+console.log(`%cType: "tutorial()" to learn how to get started`,'font-size:25px; color:#8FD129')
 
 
 function sleep(milliseconds) {
@@ -79,7 +84,6 @@ class Bomb{
                 let left_bound=parseInt(hero.style.left)+100
                 let right_bound=parseInt(hero.style.left)+200 
                 if(this.left >= left_bound && this.left <=right_bound && parseInt(this.top) >= 500){
-                    console.log("died")
                     hero.src='./images/damage_animate.gif'
                     this.setSrc('./images/explode.gif')
                     setTimeout(()=>{hero.src="./images/hero-standing-min.png"},2000)
@@ -130,7 +134,8 @@ class Bomb{
 
     stopRaid(){
         clearInterval(this.stop)
-        console.log("%cThe raid is ending", "color:#ED1C28")
+        this.destroy()
+        // console.log("%cThe raid is ending", "color:#ED1C28")
     }
 }
 
@@ -140,7 +145,7 @@ function stopRaid(){
             bombList[0].stopRaid()
             clearInterval(intervalId)
         }
-    },5000)
+    },50)
 }
 
 function startRaid(){
@@ -157,7 +162,7 @@ function help(){
     console.log("%cLet's Learn how to create your Hero","color: #8FD129; font-size: 20px");
     console.log(`%cYou can create only 1 Hero
 to create a new Hero give your ninja a name, like "yoshi" and write`,"color: #8FD129");
-    console.log("%clet yoshi = new Hero()","color: #ED1C28")
+    console.log("%cwindow.yoshi = new Hero()","color: #ED1C28")
     console.log(`%cBe sure to use lower case letters for 'new Hero' except for the H
     and replace yoshi with any name you want`,"color: #8FD129");
     console.log(`%cTo learn what you can do with your Hero type "actions()"`,"color: #785447; font-size: 16px");
@@ -184,7 +189,6 @@ function actions(){
     console.log(`%c- or -`,"color: #8FD129");
     console.log("%yoshi.attack(danny)","color: #ED1C28")
     console.log(`%cBe sure to use lowercase letters for everything`,"color: #8FD129");
-
 
     console.log("%c\nBLOCK - HERO ONLY","color: #8FD129; font-size: 20px");
     console.log(`%cYou can make your Hero block Left or Right:`,"color: #8FD129");
@@ -416,21 +420,29 @@ class Token{
 
             if(hero&&direction=="left" && heroOnLeft() && parseInt(star.style.left)<=parseInt(hero.style.left)+150){
                 //hit the hero
-                if (!hero.classList.contains("blocking")){
+                if (!hero.classList.contains("block-right")){
                     hero.src='./images/damage_animate.gif'
                     setTimeout(()=>{hero.src="./images/hero-standing-min.png"},2000)
                     health_bar.decreaseHealth()
                     checkDeath()
+                }else{
+                    if (!hero.classList.contains("tut-blk")){
+                        hero.classList.add("tut-blk")
+                    }
                 }
                 endLoop()
             }else if(hero&&direction=="right" && !heroOnLeft() && parseInt(star.style.left)>=parseInt(hero.style.left)+65){
                 //hit the hero
 
-                if (!hero.classList.contains("blocking")){
+                if (!hero.classList.contains("block-left")){
                     hero.src='./images/damage_animate.gif'
                     setTimeout(()=>{hero.src="./images/hero-standing-min.png"},2000)
                     health_bar.decreaseHealth()
                     checkDeath()
+                }else{
+                    if (!hero.classList.contains("tut-blk")){
+                        hero.classList.add("tut-blk")
+                    }
                 }
                 endLoop()
             }else if(parseInt(star.style.left)>=1050 ||parseInt(star.style.left)<=-50){
@@ -569,7 +581,8 @@ function reset(){
     window.shedder=null
     window.bebop=null
     window.rocksteady=null
-    health_bar.health=0
+    window.yoshi=null
+    health_bar.reset()
     Token.reset()
 }
 
@@ -585,13 +598,30 @@ class Hero extends Token{
     attack(enemy){
         if(  bombList.length>0 && bombList[0].command==="Hero Throw Knife"){
             bombList[0].destroy()
+            if(!this.img.classList.contains("tut-bomb")){
+                this.img.classList.add("tut-bomb")
+            }
         }
         super.attack(enemy)
     }
     walk(n=1, direction=-1){
+        if(direction==-1 && !this.img.classList.contains("tut-l")){
+            this.img.classList.add("tut-l")
+        }else if(direction>0 && !this.img.classList.contains("tut-r")){
+            this.img.classList.add("tut-r")
+        }
+        if(n>1 && !this.img.classList.contains("tut-lw")){
+            this.img.classList.add("tut-lw")
+        }
+
         if(   (bombList.length>0 && direction !==-1 && bombList[0].command==="Hero Walk Right") || 
-        (bombList.length>0 && direction==-1 && bombList[0.].command==="Hero Walk Left")){
+        (bombList.length>0 && direction==-1 && bombList[0].command==="Hero Walk Left")){
             bombList[0].destroy()
+            if(!this.img.classList.contains("tut-bomb")){
+
+                this.img.classList.add("tut-bomb")
+            }
+
         }
         super.walk(n,direction)
     }
@@ -605,19 +635,24 @@ class Hero extends Token{
     block(dir="right"){
         if(  bombList.length>0 && bombList[0].command==="Hero Block"){
             bombList[0].destroy()
+            if(!this.img.classList.contains("tut-bomb")){
+
+                this.img.classList.add("tut-bomb")
+            }
         }
 
         const old = this.img.src
-        //#TODO:
         this.isBlocking=true
         if(dir==="right"){
             this.img.src="./images/block.png"
+            this.img.classList.add("block-right")
         }
         else{
             this.img.src="./images/block-left.png"
+            this.img.classList.add("block-left")
         }
         this.img.classList.add("blocking")
-        setTimeout(()=>{this.img.src="./images/hero-standing-min.png"; this.isBlocking=false; this.img.classList.remove("blocking") },5000)
+        setTimeout(()=>{this.img.src="./images/hero-standing-min.png"; this.isBlocking=false; this.img.classList.remove("blocking","block-left","block-right") },5000)
     }
 
     blockLeft(){
@@ -648,6 +683,7 @@ class Footmen extends Token{
         }
         super.throwStar(direction)
     }
+
     walk(n, direction){
         if( ( bombList.length>0 && direction !==-1 && bombList[0].command==="Footman Walk Right") || 
         ( bombList.length>0 && direction==-1 && bombList[0.].command==="Footman Walk Left")){
@@ -662,11 +698,11 @@ class Footmen extends Token{
         Footmen.positions.push(this.position)
     }
 }
-window.start_clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
-window.danny=start_clan[0]
-window.shedder=start_clan[1]
-window.bebop=start_clan[2]
-window.rocksteady=start_clan[3]
+// window.start_clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
+// window.danny=start_clan[0]
+// window.shedder=start_clan[1]
+// window.bebop=start_clan[2]
+// window.rocksteady=start_clan[3]
 
 function randInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
@@ -681,7 +717,7 @@ function gameInfo(){
 }
 
 function level1(){
-    // window.location.reload();
+ 
     reset()
     gameInfo()
     const clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
@@ -730,7 +766,6 @@ function level2(){
             let enemy=clan[randInt(0,clan.length)]
 
             if(parseInt(enemy.img.style.left) < parseInt(window.yoshi.img.style.left)){
-                console.log(enemy+"."+ACTIONS_RIGHT[randInt(0,ACTIONS_RIGHT.length)])
                 eval("enemy."+ACTIONS_RIGHT[randInt(0,ACTIONS_RIGHT.length)])
             }else{
                 eval("enemy."+ ACTIONS_LEFT[randInt(0,ACTIONS_LEFT.length)])
@@ -784,4 +819,232 @@ function level3(){
         }
 
     },550),1000)
+}
+
+function tutorial(){
+    console.clear()
+    console.log("%cWelcome to Ninja Coders\n", "color:#8FD129; font-size:20px")
+    console.log("%cTo get started lets create our hero", "color:#8FD129;")
+    console.log("%cWe are going to name him Yoshi after the great Master Splinter","color:#8FD129;")
+    console.log("%cWe are going to initiate a new Hero instance and save it globally","color:#8FD129;")
+    console.log("%cTry typing:","color:#8FD129;")
+    console.log("%cwindow.yoshi = new Hero()","color:#ED1C28;")
+    console.log("%cYou should see ninja Yoshi appear on the screen","color:#8FD129;")
+    const tutorial1Id=setInterval(
+        ()=>{
+            if (window.yoshi!==undefined && window.yoshi!==null){
+                clearInterval(tutorial1Id)
+                tutorial2()
+            }
+        },50
+    )
+}
+
+
+function tutorial2(){
+    console.clear()
+    console.log("%cCongrats You Did It\n", "color:#8FD129; font-size:20px")
+    console.log("%cNow Lets Try walking to the Right","color:#8FD129;")
+    console.log("%cWe Do this by Typing our hero's name then calling it's method walkRight()","color:#8FD129;")
+    console.log("%cYou can think of a method as an ability of the Hero class","color:#8FD129;")
+    console.log("%cTry typing:","color:#8FD129;")
+    console.log("%cyoshi.walkRight()","color:#ED1C28;")
+    const tutorial2Id=setInterval(
+        ()=>{
+            if (document.getElementById("hero").classList.contains("tut-r")){
+                clearInterval(tutorial2Id)
+                tutorial3()
+            }
+        },50
+    )
+}
+function tutorial3(){
+    console.clear()
+    console.log("%cCongrats You Did It\n", "color:#8FD129; font-size:20px")
+    console.log("%cNow Lets Try walking to the Left","color:#8FD129;")
+    console.log("%cWe Do this by Typing our hero's name then calling it's method walkLeft()","color:#8FD129;")
+    console.log("%cYou can think of a method as an ability of the Hero class","color:#8FD129;")
+    console.log("%cTry typing:","color:#8FD129;")
+    console.log("%cyoshi.walkLeft()","color:#ED1C28;")
+    const tutorial3Id=setInterval(
+        ()=>{
+            if (document.getElementById("hero").classList.contains("tut-l")){
+                clearInterval(tutorial3Id)
+                tutorialWalk()
+            }
+        },50
+    )
+}
+
+function tutorialWalk(){
+    console.clear()
+    console.log("%cCongrats You Did It\n", "color:#8FD129; font-size:20px")
+    console.log("%cNow Lets Try walking farther","color:#8FD129;")
+    console.log("%cWe Do this by passing a number of steps as an argument to the walkLeft/walkRight methods","color:#8FD129;")
+    console.log("%cYou can think of a argument as an option","color:#8FD129;")
+    console.log("%cTry typing:","color:#8FD129;")
+    console.log("%cyoshi.walkLeft(3)","color:#ED1C28;")
+    const tutorialWalkId=setInterval(
+        ()=>{
+            if (document.getElementById("hero").classList.contains("tut-lw")){
+                clearInterval(tutorialWalkId)
+                tutorial4()
+            }
+        },50
+    )
+}
+
+function tutorial4(){
+    console.clear()
+    console.log("%cA NEW FOE HAS APPEARED\n", "color:#8FD129; font-size:20px")
+    window.danny=new Footmen()
+    console.log("%cYou better learn how to block in a hurry!","color:#8FD129;")
+    console.log("%cTo block projectiles coming from your right:","color:#8FD129;")
+    console.log("%cyoshi.blockLeft()","color:#ED1C28;")
+    console.log("%cTo block projectiles coming from your left:","color:#8FD129;")
+    console.log("%cyoshi.blockRight()","color:#ED1C28;")
+    let tutorial4IdStars
+    setTimeout(()=>{tutorial4IdStars=setInterval(
+        ()=>{
+            window.danny.throwStarLeft()
+        },500
+    )},5000)
+
+    const tutorial4Id=setInterval(
+        ()=>{
+            if (document.getElementById("hero").classList.contains("tut-blk")){
+                clearInterval(tutorial4Id)
+                clearInterval(tutorial4IdStars)
+                tutorial5()
+            }
+        },50
+    )
+}
+
+function tutorial5(){
+    window.danny.remove()
+    console.clear()
+    console.log("%cFIGHT BACK\n", "color:#8FD129; font-size:20px")
+    console.log("%cIts time to take Danny down!","color:#8FD129;")
+    console.log("%cTo attack you'll pass the name of the enemy as an argument to the attack method of our Hero class","color:#8FD129;")
+    console.log("%cTry typing:","color:#8FD129;")
+    console.log("%cyoshi.attack(danny)","color:#ED1C28;")
+    window.danny=new Footmen()
+    const tutorial5IdStars=setTimeout(()=>{setInterval(
+        ()=>{
+            window.danny.throwStarLeft()
+        },500
+    )},5000)
+
+    const tutorial5Id=setInterval(
+        ()=>{
+            if (document.getElementById("first")===null){
+                clearTimeout(tutorial5IdStars)
+                clearInterval(tutorial5Id)
+                tutorial6()
+            }
+        },50
+    )
+}
+
+function tutorial6(){
+    console.clear()
+    console.log("%cAIR RAID!\n", "color:#8FD129; font-size:20px")
+    console.log("%cThe Clan was not happy and have sent an air raid to stop you","color:#8FD129;")
+    console.log("%cA Message will appear at the top of the screen to give you a way to destroy the bombs","color:#8FD129;")
+    console.log("%cTo help you remember how things work you can use the actions method:","color:#8FD129;")
+    console.log("%cactions()","color:#ED1C28;")
+    console.log("%cA random member of the foot has shown up aswell","color:#8FD129;")
+    console.log('%cWe will call them "foot"',"color:#8FD129;")
+    console.log("%cDon't attack them unless the bomb asks you too","color:#8FD129;")
+    console.log('%cto attack "foot" it would look like:',"color:#8FD129;")
+    console.log("%cyoshi.attack(foot)","color:#ED1C28;")
+
+    startRaid()
+    window.danny.remove()
+    window.foot=new Footmen()
+    const tutorial6Id=setInterval(
+        ()=>{
+            if (document.getElementById("hero").classList.contains("tut-bomb")){
+                clearInterval(tutorial6Id)
+                tutorial7()
+            }
+        },50
+    )
+}
+
+
+
+function tutorial7() {
+    stopRaid()
+    window.foot.remove()
+    console.clear()
+    console.log("%cNew Foes Have Appeared\n", "color:#8FD129; font-size:20px")
+    console.log("%cLooks like Shredder, BeBop, and Rocksteady have shown up","color:#8FD129;")
+    console.log("%cTo attack to attack them be sure to type pass their name to the attack method like so:","color:#8FD129;")
+    console.log("%cyoshi.attack(shedder)","color:#ED1C28;")
+    console.log("%cyoshi.attack(bebop)","color:#ED1C28;")
+    console.log("%cyoshi.attack(rocksteady)","color:#ED1C28;")
+    const clan=[new Footmen(),new Footmen(),new Footmen()]
+    window.shedder=clan[0]
+    window.bebop=clan[1]
+    window.rocksteady=clan[2]
+    const ACTIONS=["throwStarRight()","throwStarLeft()"]
+
+    setTimeout(()=>{
+    
+        const intervalId=setInterval(()=>{
+
+        if (health_bar.health<health_bar.maxHealth){
+            let enemy=clan[randInt(0,clan.length)]
+
+            if(parseInt(enemy.img.style.left) < parseInt(window.yoshi.img.style.left)){
+                eval("enemy."+ACTIONS[randInt(0,ACTIONS.length)])
+            }else{
+
+                eval("enemy."+ ACTIONS[randInt(0,ACTIONS.length)])
+            }
+            for(let footman of clan){
+                if (!footman.img){
+                    clan.splice(clan.indexOf(footman),1)
+                }
+            }
+
+        }else{
+            clearInterval(intervalId)
+        }
+
+    },550)},5000)
+
+    const finishId=setInterval(
+        ()=>{
+            if (document.getElementById("first")===null&&document.getElementById("fourth")===null&&document.getElementById("third")===null&&document.getElementById("second")===null){
+                clearInterval(finishId)
+                console.clear()
+                console.log("%cYou are Ready for your mission!","color:#8FD129; font-size:20px;")
+                console.log("%cThere are three difficulties you can try","color:#8FD129;")
+                
+                console.log("%cLevel 1","color:#8FD129; font-size:15px;")
+                console.log("%cFight four standard itelligence Foot","color:#8FD129;")
+                console.log("%cTo play type:","color:#8FD129;")
+                console.log("%clevel1()","color:#ED1C28;")
+
+
+                console.log("%cLevel 2","color:#8FD129; font-size:20px;")
+                console.log("%cThe Foot Clan members are smarter now and attack faster","color:#8FD129;")
+                console.log("%cTo play type:","color:#8FD129;")
+                console.log("%clevel2()","color:#ED1C28;")
+
+
+                console.log("%cLevel 3","color:#8FD129; font-size:20px;")
+                console.log("%cThe Foot is pist! They now send a constant air raid!","color:#8FD129;")
+                console.log("%cTo play type:","color:#8FD129;")
+                console.log("%clevel3()","color:#ED1C28;")
+
+
+            }
+        },50
+    )
+
+
 }
