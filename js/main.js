@@ -184,7 +184,7 @@ function actions(){
     console.log("%c\nKNIFE THROW","color: #8FD129; font-size: 20px");
     console.log(`%cYou can make your Hero throw a knife at a member of the footclan by passing the name of the footclan member to the attack method:`,"color: #8FD129");
     console.log(`%cEach member of the Footclan has their own specific name. they are:`,"color: #8FD129");
-    console.log("%cbebop\nrocksteady\ndanny\nshedder","color: #ED1C28")
+    console.log("%cbebop\nrocksteady\ndanny\nshredder","color: #ED1C28")
     console.log("%yoshi.attack(danny)","color: #ED1C28")
     console.log(`%c- or -`,"color: #8FD129");
     console.log("%yoshi.attack(danny)","color: #ED1C28")
@@ -683,7 +683,7 @@ function reset(){
     window.start_clan=[]
     removeAll()
     window.danny=null
-    window.shedder=null
+    window.shredder=null
     window.bebop=null
     window.rocksteady=null
     window.yoshi=null
@@ -823,7 +823,7 @@ class Footmen extends Token{
 function refresh(){window.location.reload()}
 // window.start_clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
 // window.danny=start_clan[0]
-// window.shedder=start_clan[1]
+// window.shredder=start_clan[1]
 // window.bebop=start_clan[2]
 // window.rocksteady=start_clan[3]
 
@@ -836,19 +836,19 @@ function gameInfo(){
     console.log(`%cYour Hero name:`,"color: #8FD129");
     console.log("%cyoshi","color: #ED1C28")
     console.log(`%cFootclan Names:`,"color: #8FD129");
-    console.log("%cbebop\nrocksteady\ndanny\nshedder","color: #ED1C28")
+    console.log("%cbebop\nrocksteady\ndanny\nshredder","color: #ED1C28")
 }
 
 function removeAll(){
     delete window.danny
-    delete window.shedder
+    delete window.shredder
     delete window.bebop
     delete window.rocksteady
     delete window.yoshi
     delete window.foot
 
     window.danny?.remove()
-    window.shedder?.remove()
+    window.shredder?.remove()
     window.bebop?.remove()
     window.rocksteady?.remove()
     window.yoshi?.remove()
@@ -879,7 +879,7 @@ function level1(){
     gameInfo()
     const clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
     window.danny=clan[0]
-    window.shedder=clan[1]
+    window.shredder=clan[1]
     window.bebop=clan[2]
     window.rocksteady=clan[3]
     window.yoshi=new Hero()
@@ -916,7 +916,7 @@ function level2(){
     gameInfo()
     const clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
     window.danny=clan[0]
-    window.shedder=clan[1]
+    window.shredder=clan[1]
     window.bebop=clan[2]
     window.rocksteady=clan[3]
     window.yoshi=new Hero()
@@ -958,7 +958,7 @@ function level3(){
     gameInfo()
     const clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
     window.danny=clan[0]
-    window.shedder=clan[1]
+    window.shredder=clan[1]
     window.bebop=clan[2]
     window.rocksteady=clan[3]
     window.yoshi=new Hero()
@@ -1154,11 +1154,11 @@ function tutorial7() {
     console.log("%cNew Foes Have Appeared\n", "color:#8FD129; font-size:20px")
     console.log("%cLooks like Shredder, BeBop, and Rocksteady have shown up","color:#8FD129;")
     console.log("%cTo attack to attack them be sure to type pass their name to the attack method like so:","color:#8FD129;")
-    console.log("%cyoshi.attack(shedder)","color:#ED1C28;")
+    console.log("%cyoshi.attack(shredder)","color:#ED1C28;")
     console.log("%cyoshi.attack(bebop)","color:#ED1C28;")
     console.log("%cyoshi.attack(rocksteady)","color:#ED1C28;")
     const clan=[new Footmen(),new Footmen(),new Footmen()]
-    window.shedder=clan[0]
+    window.shredder=clan[0]
     window.bebop=clan[1]
     window.rocksteady=clan[2]
     const ACTIONS=["throwStarRight()","throwStarLeft()"]
