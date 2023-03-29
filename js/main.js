@@ -349,7 +349,8 @@ class Token{
         img.style.top=NINJA_HEIGHT
         if (Invoker ===Hero){
             img.style.top=`${parseInt(NINJA_HEIGHT)-25}px`
-
+        }else{
+            img.classList.add("bad")
         }
         img.style.zIndex=99
         if (Invoker.positions.length>0){
@@ -586,7 +587,7 @@ class Token{
         // this.backdrop.removeChild(this.img)
         // this.backdrop.appendChild(newImg)
         let direction
-        if(hero.style.left >= enemy.img.style.left){
+        if(parseInt(hero.style.left) >= parseInt(enemy.img.style.left)+150){
             //throw toward the left
             direction = "left"
             hero.src="./images/hero-throw-knife-left-min.gif"
@@ -690,6 +691,12 @@ function reset(){
     health_bar.reset()
     Token.reset()
     document.getElementById("backdrop").innerHTML=""
+    const win=document.getElementById("win")
+    
+    if(win)win.style.visibility="hidden"
+    const go=document.getElementById("gaveover")
+    if(go)go.style.visibility="hidden"
+
 }
 
 class Hero extends Token{
@@ -860,6 +867,11 @@ function clearMyIntervals(){
 
 
 }
+
+function winScreen(){
+    reset()
+    document.getElementById("win").style.visibility="visible"
+}
 function level1(){
     clearMyIntervals()
     removeAll()
@@ -874,8 +886,7 @@ function level1(){
     const ACTIONS=["throwStarLeft()", "throwStarRight()","walkLeft(4)","walkRight(4)"]
     
     setTimeout(()=>{intervalIdL1=setInterval(()=>{
-
-        if (health_bar.health<health_bar.maxHealth){
+        if (health_bar.health<health_bar.maxHealth && document.getElementsByClassName("bad")?.length>0){
             eval("clan[randInt(0,clan.length)]."+ACTIONS[randInt(0,ACTIONS.length)])
             for(let footman of clan){
                 if (!footman.img){
@@ -883,7 +894,10 @@ function level1(){
                 }
             }
 
-        }else{
+        }else if (!health_bar.health<health_bar.maxHealth || !document.getElementsByClassName("bad")?.length>0){
+            if(document.getElementById("hero")){
+                winScreen()
+            }
             clearInterval(intervalIdL1)
         }
 
@@ -911,10 +925,10 @@ function level2(){
 
     setTimeout(()=>{intervalIdL2=setInterval(()=>{
 
-        if (health_bar.health<health_bar.maxHealth){
+        if (health_bar.health<health_bar.maxHealth  && document.getElementsByClassName("bad")?.length>0){
             let enemy=clan[randInt(0,clan.length)]
 
-            if(enemy?.img&& window.yoshi?.img &&parseInt(enemy?.img.style.left) < parseInt(window.yoshi?.img.style.left)){
+            if(enemy?.img&& window.yoshi?.img &&parseInt(enemy?.img.style.left) < parseInt(window.yoshi?.img.style.left) ){
                 eval("enemy."+ACTIONS_RIGHT[randInt(0,ACTIONS_RIGHT.length)])
             }else{
                 eval("enemy."+ ACTIONS_LEFT[randInt(0,ACTIONS_LEFT.length)])
@@ -925,7 +939,10 @@ function level2(){
                 }
             }
 
-        }else{
+        }else if (!health_bar.health<health_bar.maxHealth  || !document.getElementsByClassName("bad")?.length>0){
+            if(document.getElementById("hero")){
+                winScreen()
+            }
             clearInterval(intervalIdL2)
         }
 
@@ -950,7 +967,7 @@ function level3(){
     startRaid()
     setTimeout(()=>{intervalIdL3=setInterval(()=>{
 
-        if (health_bar.health<health_bar.maxHealth){
+        if (health_bar.health<health_bar.maxHealth && document.getElementsByClassName("bad")?.length>0){
             let enemy=clan[randInt(0,clan.length)]
 
             if(enemy?.img && window.yoshi?.img && parseInt(enemy.img.style.left) < parseInt(window.yoshi.img.style.left)){
@@ -965,7 +982,10 @@ function level3(){
                 }
             }
 
-        }else{
+        }else if (!health_bar.health<health_bar.maxHealth || !document.getElementsByClassName("bad")?.length>0){
+            if(document.getElementById("hero")){
+                winScreen()
+            }
             clearInterval(intervalIdL3)
             stopRaid()
         }
