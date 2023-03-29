@@ -233,7 +233,7 @@ function collision(img1,img2){
     const canvas = document.createElement('canvas');
     canvas.width = overlapRight - overlapLeft;
     canvas.height = overlapBottom - overlapTop;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     // draw img1 onto the canvas
     const x1 = rect1.left - overlapLeft;
     const y1 = rect1.top - overlapTop;
@@ -262,7 +262,7 @@ function outOfBounds(imgNode, containerNode) {
     const imgRect = imgNode.getBoundingClientRect();
     // Get the canvas and context for the image
     const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext('2d', { willReadFrequently: true });
     const imgWidth = imgNode.width;
     const imgHeight = imgNode.height;
     // Set the canvas size to match the image size
@@ -285,6 +285,7 @@ function outOfBounds(imgNode, containerNode) {
     // Draw the background image onto the canvas
     context.drawImage(bgImg, 0, 0, bgImgWidth, bgImgHeight);
     // Get the pixel data for the background image
+    if(bgImgWidth||bgImgHeight==0){return}
     const bgData = context.getImageData(0, 0, bgImgWidth, bgImgHeight).data;
     // Check if any non-transparent pixels of the image are going outside the container
     for (let i = 0; i < imgData.length; i += 4) {
@@ -537,7 +538,7 @@ class Token{
                     }
                 }
                 endLoop()
-            }else if(parseInt(star.style.left)>=1050 ||parseInt(star.style.left)<=-50){
+            }else if(parseInt(star.style.left)>=1000 ||parseInt(star.style.left)<=-50){
                 endLoop()
             }
             const liveStar=document.getElementById(`star-${this.id}-${star_rand}`)
