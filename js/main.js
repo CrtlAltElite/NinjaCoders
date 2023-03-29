@@ -730,8 +730,7 @@ class Hero extends Token{
         if(   (bombList.length>0 && direction !==-1 && bombList[0].command==="Walk Right") || 
         (bombList.length>0 && direction==-1 && bombList[0].command==="Walk Left")){
             bombList[0].destroy()
-            if(!this.img.classList.contains("tut-bomb") && this.id==="first"){
-
+            if(!this.img.classList.contains("tut-bomb") && this.id==="hero"){
                 this.img.classList.add("tut-bomb")
             }
 
@@ -793,6 +792,7 @@ class Footmen extends Token{
     static allFootmen=[]
     constructor(){
         super(Footmen)
+        this.alive=true
         Footmen.allFootmen.push(this)
     }
 
@@ -1102,16 +1102,18 @@ function tutorial5(){
     console.log("%cTry typing:","color:#8FD129;")
     console.log("%cyoshi.attack(danny)","color:#ED1C28;")
     window.danny=new Footmen()
-    const tutorial5IdStars=setTimeout(()=>{setInterval(
+    let tutorial5IdStars
+    setTimeout(()=>{
+        tutorial5IdStars=setInterval(
         ()=>{
-            window.danny.throwStarLeft()
+            window.danny?.throwStarLeft()
         },500
     )},5000)
 
     const tutorial5Id=setInterval(
         ()=>{
             if (!document.documentElement.contains(window.danny.img)){
-                clearTimeout(tutorial5IdStars)
+                clearInterval(tutorial5IdStars)
                 clearInterval(tutorial5Id)
                 tutorial6()
             }
@@ -1149,7 +1151,7 @@ function tutorial6(){
 
 function tutorial7() {
     stopRaid()
-    window.foot.remove()
+    window.foot?.remove()
     console.clear()
     console.log("%cNew Foes Have Appeared\n", "color:#8FD129; font-size:20px")
     console.log("%cLooks like Shredder, BeBop, and Rocksteady have shown up","color:#8FD129;")
@@ -1157,7 +1159,7 @@ function tutorial7() {
     console.log("%cyoshi.attack(shredder)","color:#ED1C28;")
     console.log("%cyoshi.attack(bebop)","color:#ED1C28;")
     console.log("%cyoshi.attack(rocksteady)","color:#ED1C28;")
-    const clan=[new Footmen(),new Footmen(),new Footmen()]
+    window.clan=[new Footmen(),new Footmen(),new Footmen()]
     window.shredder=clan[0]
     window.bebop=clan[1]
     window.rocksteady=clan[2]
@@ -1166,57 +1168,52 @@ function tutorial7() {
     setTimeout(()=>{
     
         const intervalId=setInterval(()=>{
-        if(clan.length=0){ clearInterval(intervalId) }
+        if(window.clan.length==0){ clearInterval(intervalId) }
         if (health_bar.health<health_bar.maxHealth){
-            let enemy=clan[randInt(0,clan.length)]
+            let enemy=window.clan[randInt(0,window.clan.length)]
 
-            if(parseInt(enemy.img.style.left) < parseInt(window.yoshi.img.style.left)){
+            if(parseInt(enemy?.img.style.left) < parseInt(window.yoshi?.img.style.left)){
                 eval("enemy."+ACTIONS[randInt(0,ACTIONS.length)])
             }else{
 
                 eval("enemy."+ ACTIONS[randInt(0,ACTIONS.length)])
             }
-            for(let footman of clan){
-                if (!footman.img){
-                    clan.splice(clan.indexOf(footman),1)
+            for(let footman of window.clan){
+                if (!footman?.img){
+                    window.clan.splice(window.clan.indexOf(footman),1)
                 }
             }
 
-        }else{
+        }else if(!health_bar.health<health_bar.maxHealth){
             clearInterval(intervalId)
+        }else if (document.getElementById("first")===null&&document.getElementById("fourth")===null&&document.getElementById("third")===null&&document.getElementById("second")===null){
+            console.clear()
+            console.log("%cYou are Ready for your mission!","color:#8FD129; font-size:20px;")
+            console.log("%cThere are three difficulties you can try","color:#8FD129;")
+            
+            console.log("%cLevel 1","color:#8FD129; font-size:15px;")
+            console.log("%cFight four standard itelligence Foot","color:#8FD129;")
+            console.log("%cTo play type:","color:#8FD129;")
+            console.log("%clevel1()","color:#ED1C28;")
+
+
+            console.log("%cLevel 2","color:#8FD129; font-size:20px;")
+            console.log("%cThe Foot Clan members are smarter now and attack faster","color:#8FD129;")
+            console.log("%cTo play type:","color:#8FD129;")
+            console.log("%clevel2()","color:#ED1C28;")
+
+
+            console.log("%cLevel 3","color:#8FD129; font-size:20px;")
+            console.log("%cThe Foot is pist! They now send a constant air raid!","color:#8FD129;")
+            console.log("%cTo play type:","color:#8FD129;")
+            console.log("%clevel3()","color:#ED1C28;")
         }
 
     },850)},5000)
 
-    const finishId=setInterval(
-        ()=>{
-            if (document.getElementById("first")===null&&document.getElementById("fourth")===null&&document.getElementById("third")===null&&document.getElementById("second")===null){
-                clearInterval(finishId)
-                console.clear()
-                console.log("%cYou are Ready for your mission!","color:#8FD129; font-size:20px;")
-                console.log("%cThere are three difficulties you can try","color:#8FD129;")
-                
-                console.log("%cLevel 1","color:#8FD129; font-size:15px;")
-                console.log("%cFight four standard itelligence Foot","color:#8FD129;")
-                console.log("%cTo play type:","color:#8FD129;")
-                console.log("%clevel1()","color:#ED1C28;")
 
+            
 
-                console.log("%cLevel 2","color:#8FD129; font-size:20px;")
-                console.log("%cThe Foot Clan members are smarter now and attack faster","color:#8FD129;")
-                console.log("%cTo play type:","color:#8FD129;")
-                console.log("%clevel2()","color:#ED1C28;")
-
-
-                console.log("%cLevel 3","color:#8FD129; font-size:20px;")
-                console.log("%cThe Foot is pist! They now send a constant air raid!","color:#8FD129;")
-                console.log("%cTo play type:","color:#8FD129;")
-                console.log("%clevel3()","color:#ED1C28;")
-
-
-            }
-        },50
-    )
 
 
 }
