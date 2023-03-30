@@ -28,7 +28,7 @@ class Health{
 
 const NINJA_HEIGHT = "475px"
 const FOOTMEN_POSITIONS=["400px", "500px", "600px", "700px"]
-const FOOTMEN_IDS=["first" ,"second", "third", "fourth"]
+const FOOTMEN_IDS=["fourth","third","second", "first" ]
 const HERO_POSITIONS=["50px"]
 const HERO_IDS=["hero"]
 
@@ -219,42 +219,14 @@ function actions(){
     
 }
 function collision(img1,img2){
-    // get the bounding rectangles of the images
     const rect1 = img1.getBoundingClientRect();
     const rect2 = img2.getBoundingClientRect();
-    // calculate the overlapping area between the images
     const overlapLeft = Math.max(rect1.left, rect2.left);
     const overlapTop = Math.max(rect1.top, rect2.top);
     const overlapRight = Math.min(rect1.right, rect2.right);
     const overlapBottom = Math.min(rect1.bottom, rect2.bottom);
-    // check if the overlapping area is non-zero
     if (overlapLeft < overlapRight && overlapTop < overlapBottom) {
-    // // create a temporary canvas to draw the images onto
-    return true
-    // const canvas = document.createElement('canvas');
-    // canvas.width = overlapRight - overlapLeft;
-    // canvas.height = overlapBottom - overlapTop;
-    // const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    // // draw img1 onto the canvas
-    // const x1 = rect1.left - overlapLeft;
-    // const y1 = rect1.top - overlapTop;    
-    // if(x1||y1==0){return}
-
-    // ctx.drawImage(img1, x1, y1);
-    // // draw img2 onto the canvas
-    // const x2 = rect2.left - overlapLeft;
-    // const y2 = rect2.top - overlapTop;
-    // if(x1||y1==0){return}
-    // ctx.drawImage(img2, x2, y2);
-    // // get the image data of the overlapping area
-    // const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    // const data = imageData.data;
-    // // check if any non-transparent pixels exist in the overlapping area
-    // for (let i = 3; i < data.length; i += 4) {
-    //     if (data[i] === 0) {
-    //     return true;
-    //     }
-    // }
+        return true
     }
     return false;
 }
@@ -273,6 +245,8 @@ function outOfBounds(imgNode, containerNode) {
     canvas.width = imgWidth;
     canvas.height = imgHeight;
     // Draw the image onto the canvas
+    if(imgWidth||imgHeight==0){return}
+
     context.drawImage(imgNode, 0, 0, imgWidth, imgHeight);
     // Get the pixel data for the image
     const imgData = context.getImageData(0, 0, imgWidth, imgHeight).data;
@@ -362,6 +336,8 @@ class Token{
             img.src=this.baseImg
             img.id=this.id
             img.style.left=this.position
+            this.hue=this.setHue()
+
         }
         else{
             console.log("You can only have 4 Footmen and 1 Hero")
@@ -370,7 +346,16 @@ class Token{
         this.backdrop.appendChild(img)
 
     }
-    
+    setHue(){
+        switch(this.img.id){
+            case "second": this.hue=225;break;
+            case "third": this.hue=135;break;
+            case "fourth": this.hue=55;break;
+            default: this.hue=0;break;
+
+        }
+        this.img.style.filter=`hue-rotate(${this.hue}deg)`
+    }
     walk(n = 1, direction=-1) {
         if(this.isRunning)return
         this.isRunning=true
@@ -571,6 +556,7 @@ class Token{
 
     attack(enemy){
         if(this.id!=="hero"){console.log("Only our Hero has this ability");return;}
+        if(document.getElementById(enemy.img?.id)==null){return console.log("They are not around")}
         if(this.isRunning)return
         this.isRunning=true
         if (enemy == undefined || enemy==null){
@@ -814,9 +800,11 @@ class Footmen extends Token{
 
     remove(){
         this.img.remove()
-        Footmen.ids.push(this.id)
+        Footmen.ids.splice(FOOTMEN_IDS.indexOf(this.id),0,this.id)
+        
         if(!Footmen.positions.includes(this.position)){
-            Footmen.positions.push(this.position)
+            Footmen.positions.splice(FOOTMEN_POSITIONS.indexOf(this.id),0,this.position)
+            // Footmen.positions.push(this.position)
         }
 
     }
@@ -836,8 +824,8 @@ function gameInfo(){
     console.log(`%cYour Hero has been made for you`,"color: #8FD129")
     console.log(`%cYour Hero name:`,"color: #8FD129");
     console.log("%cyoshi","color: #ED1C28")
-    console.log(`%cFootclan Names:`,"color: #8FD129");
-    console.log("%cbebop\nrocksteady\ndanny\nshredder","color: #ED1C28")
+    console.log(`%cFootclan Names : Color`,"color: #8FD129");
+    console.log("%cdanny      : green\nbebop      : pink\nrocksteady : blue\nshredder   : orange","color: #ED1C28")
 }
 
 function removeAll(){
@@ -1155,15 +1143,23 @@ function tutorial7() {
     window.foot?.remove()
     console.clear()
     console.log("%cNew Foes Have Appeared\n", "color:#8FD129; font-size:20px")
-    console.log("%cLooks like Shredder, BeBop, and Rocksteady have shown up","color:#8FD129;")
+    console.log("%cLooks like Shredder(orange), BeBop(blue), and Rocksteady(pink) have shown up","color:#8FD129;")
     console.log("%cTo attack to attack them be sure to type pass their name to the attack method like so:","color:#8FD129;")
     console.log("%cyoshi.attack(shredder)","color:#ED1C28;")
     console.log("%cyoshi.attack(bebop)","color:#ED1C28;")
     console.log("%cyoshi.attack(rocksteady)","color:#ED1C28;")
+    // window.danny=new Footmen()
     window.clan=[new Footmen(),new Footmen(),new Footmen()]
     window.shredder=clan[0]
+    window.shredder.img.id="second"
+    window.shredder.setHue()
     window.bebop=clan[1]
+    window.bebop.img.id="fourth"
+    window.bebop.setHue()
     window.rocksteady=clan[2]
+    window.rocksteady.img.id="third"
+    window.rocksteady.setHue()
+    // window.danny.remove()
     const ACTIONS=["throwStarRight()","throwStarLeft()"]
 
     setTimeout(()=>{
@@ -1219,9 +1215,39 @@ function tutorial7() {
 
     },1500)},5000)
 
-
             
 
 
 
+}
+function levelx(){
+    clearMyIntervals()
+    removeAll()
+    reset()
+    gameInfo()
+    const clan=[new Footmen()]
+    window.danny=clan[0]
+    setTimeout(()=>{window.shredder=new Footmen()}, 1000)
+    setTimeout(()=>{window.bebop=new Footmen()}, 3800)
+    setTimeout(()=>{window.rocksteady=new Footmen()}, 7000)
+    window.yoshi=new Hero()
+    const ACTIONS=["throwStarLeft()", "throwStarRight()","walkLeft(4)","walkRight(4)"]
+    
+    setTimeout(()=>{intervalIdL1=setInterval(()=>{
+        if (health_bar.health<health_bar.maxHealth && document.getElementsByClassName("bad")?.length>0){
+            eval("clan[randInt(0,clan.length)]."+ACTIONS[randInt(0,ACTIONS.length)])
+            for(let footman of clan){
+                if (!footman.img){
+                    clan.splice(clan.indexOf(footman),1)
+                }
+            }
+
+        }else if (!health_bar.health<health_bar.maxHealth || !document.getElementsByClassName("bad")?.length>0){
+            if(document.getElementById("hero")){
+                winScreen()
+            }
+            clearInterval(intervalIdL1)
+        }
+
+    },1250)},1000)
 }
