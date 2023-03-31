@@ -983,6 +983,7 @@ function level3(){
 }
 
 function tutorial(){
+    reset()
     console.clear()
     console.log("%cWelcome to Ninja Coders\n", "color:#8FD129; font-size:20px")
     console.log("%cTo get started lets create our hero", "color:#8FD129;")
@@ -1140,6 +1141,7 @@ function tutorial6(){
 
 function tutorial7() {
     stopRaid()
+    reset()
     window.foot?.remove()
     console.clear()
     console.log("%cNew Foes Have Appeared\n", "color:#8FD129; font-size:20px")
@@ -1148,19 +1150,27 @@ function tutorial7() {
     console.log("%cyoshi.attack(shredder)","color:#ED1C28;")
     console.log("%cyoshi.attack(bebop)","color:#ED1C28;")
     console.log("%cyoshi.attack(rocksteady)","color:#ED1C28;")
-    // window.danny=new Footmen()
+    window.danny=new Footmen()
     window.clan=[new Footmen(),new Footmen(),new Footmen()]
+    window.danny.remove()
+    window.danny=null
+    window.yoshi=new Hero()
     window.shredder=clan[0]
     window.shredder.img.id="second"
+    window.shredder.id="second"
     window.shredder.setHue()
     window.bebop=clan[1]
     window.bebop.img.id="fourth"
+    window.bebop.id="fourth"
+
     window.bebop.setHue()
     window.rocksteady=clan[2]
     window.rocksteady.img.id="third"
+    window.rocksteady.id="third"
+
     window.rocksteady.setHue()
     // window.danny.remove()
-    const ACTIONS=["throwStarRight()","throwStarLeft()"]
+    // const ACTIONS=["throwStarRight()","throwStarLeft()"]
 
     setTimeout(()=>{
     
@@ -1169,15 +1179,19 @@ function tutorial7() {
 
         if (health_bar.health<health_bar.maxHealth && !window.clan.length==0){
             // console.log("main if")
+            const randNum=randInt(0,window.clan.length)
+            console.log("index",randNum)
+            if(randInt(0,2)>0){
+                console.log("attack")
+                let enemy=window.clan[randNum].throwStarLeft()
+            }    
 
-            let enemy=window.clan[randInt(0,window.clan.length)]
-
-            if(parseInt(enemy?.img.style.left) < parseInt(window.yoshi?.img.style.left)){
-                eval("enemy."+ACTIONS[randInt(0,ACTIONS.length)])
-            }else{
-
-                eval("enemy."+ ACTIONS[randInt(0,ACTIONS.length)])
-            }
+            // if(parseInt(enemy?.img.style.left) < parseInt(window.yoshi?.img.style.left)){
+                // eval("enemy."+ACTIONS[randInt(0,ACTIONS.length)])
+            // }else{
+// 
+                // eval("enemy."+ ACTIONS[randInt(0,ACTIONS.length)])
+            // }
             for(let footman of window.clan){
                 // console.log("loop")
 
@@ -1213,7 +1227,7 @@ function tutorial7() {
             console.log("%clevel3()","color:#ED1C28;")
         }
 
-    },1500)},5000)
+    },1200)},4000)
 
             
 
