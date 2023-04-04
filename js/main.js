@@ -50,11 +50,11 @@ function sleep(milliseconds) {
 
 const COMMANDS=[ "Block", "Walk Left", "Walk Right", "Throw Knife"]
 
-let bombList=[]
 
 class Bomb{
+    static bombList=[]
     constructor(){
-        if(bombList.length!==0){
+        if(Bomb.bombList.length!==0){
             return
         }
         this.img_src="./images/bomb.png"
@@ -68,7 +68,7 @@ class Bomb{
         this.id = "bomb"
         this.command = COMMANDS[Math.floor(Math.random()*COMMANDS.length)]
         this.setAttr()
-        bombList.push(this)
+        Bomb.bombList.push(this)
         this.stop
         this.goInt
         document.getElementById("backdrop").appendChild(this.node)
@@ -128,8 +128,9 @@ class Bomb{
     destroy(){
         this.node.remove()
         clearInterval(this.goInt)
-        // bombList=bombList.filter((bomb)=>bomb!==this)
+        // Bomb.bombList=Bomb.bombList.filter((bomb)=>bomb!==this)
         document.getElementById("bomb-desc")?.remove()
+        Bomb.bombList=[]
     }
 
     stopRaid(){
@@ -141,21 +142,22 @@ class Bomb{
 
 function stopRaid(){
     const intervalId=setInterval(()=>{
-        if (bombList.length!==0){
-            bombList[0].stopRaid()
+        if (Bomb.bombList.length!==0){
+            Bomb.bombList[0].stopRaid()
             clearInterval(intervalId)
         }
     },50)
 }
 
-function startRaid(){
+function startRaid(time=3000){
         console.log("%cWatch out for BOMBS! \n To Destroy a Bomb Complete the action that pops up", "color: #ED1C28")
         const intervalId =setInterval(()=>{
                 let b=new Bomb()
                 b.stop=intervalId
             
         }
-        ,6000)
+        ,time)
+        // return intervalId
 }
 
 function help(){
@@ -696,8 +698,8 @@ class Hero extends Token{
     }
 
     attack(enemy){
-        if(  bombList.length>0 && bombList[0].command==="Throw Knife"){
-            bombList[0].destroy()
+        if(  Bomb.bombList.length>0 && Bomb.bombList[0].command==="Throw Knife"){
+            Bomb.bombList[0].destroy()
             if(!this.img.classList.contains("tut-bomb")){
                 this.img.classList.add("tut-bomb")
             }
@@ -714,9 +716,9 @@ class Hero extends Token{
             this.img.classList.add("tut-lw")
         }
 
-        if(   (bombList.length>0 && direction !==-1 && bombList[0].command==="Walk Right") || 
-        (bombList.length>0 && direction==-1 && bombList[0].command==="Walk Left")){
-            bombList[0].destroy()
+        if(   (Bomb.bombList.length>0 && direction !==-1 && Bomb.bombList[0].command==="Walk Right") || 
+        (Bomb.bombList.length>0 && direction==-1 && Bomb.bombList[0].command==="Walk Left")){
+            Bomb.bombList[0].destroy()
             if(!this.img.classList.contains("tut-bomb") && this.id==="hero"){
                 this.img.classList.add("tut-bomb")
             }
@@ -736,8 +738,8 @@ class Hero extends Token{
     }
 
     block(dir="right"){
-        if(  bombList.length>0 && bombList[0].command==="Block"){
-            bombList[0].destroy()
+        if(  Bomb.bombList.length>0 && Bomb.bombList[0].command==="Block"){
+            Bomb.bombList[0].destroy()
             if(!this.img.classList.contains("tut-bomb")){
 
                 this.img.classList.add("tut-bomb")
@@ -784,16 +786,16 @@ class Footmen extends Token{
     }
 
     throwStar(direction){
-        if( bombList.length>0 && bombList[0].command==="Footmen Throw Star"){
-            bombList[0].destroy()
+        if( Bomb.bombList.length>0 && Bomb.bombList[0].command==="Footmen Throw Star"){
+            Bomb.bombList[0].destroy()
         }
         super.throwStar(direction)
     }
 
     walk(n, direction){
-        if( ( bombList.length>0 && direction !==-1 && bombList[0].command==="Footman Walk Right") || 
-        ( bombList.length>0 && direction==-1 && bombList[0.].command==="Footman Walk Left")){
-            bombList[0].destroy()
+        if( ( Bomb.bombList.length>0 && direction !==-1 && Bomb.bombList[0].command==="Footman Walk Right") || 
+        ( Bomb.bombList.length>0 && direction==-1 && Bomb.bombList[0.].command==="Footman Walk Left")){
+            Bomb.bombList[0].destroy()
         }
         super.walk(n,direction)
     }
@@ -953,7 +955,7 @@ function level3(){
     window.yoshi=new Hero()
     const ACTIONS_RIGHT=["throwStarRight()","walkRight(4)"]
     const ACTIONS_LEFT=["throwStarLeft()","walkLeft(4)"]
-    startRaid()
+     startRaid()
     setTimeout(()=>{intervalIdL3=setInterval(()=>{
 
         if (health_bar.health<health_bar.maxHealth && document.getElementsByClassName("bad")?.length>0){
@@ -976,6 +978,7 @@ function level3(){
                 winScreen()
             }
             clearInterval(intervalIdL3)
+            // clearInterval(raidInt)
             stopRaid()
         }
 
@@ -1098,11 +1101,11 @@ function tutorial5(){
         ()=>{
             window.danny?.throwStarLeft()
         },500
-    )},5000)
+    )},8500)
 
     const tutorial5Id=setInterval(
         ()=>{
-            if (!document.documentElement.contains(window.danny.img)){
+            if (!document.documentElement.contains(window.danny?.img)){
                 clearInterval(tutorial5IdStars)
                 clearInterval(tutorial5Id)
                 tutorial6()
@@ -1124,13 +1127,14 @@ function tutorial6(){
     console.log('%cto attack "foot" it would look like:',"color:#8FD129;")
     console.log("%cyoshi.attack(foot)","color:#ED1C28;")
 
-    startRaid()
+    startRaid(3000)
     window.danny.remove()
     window.foot=new Footmen()
     const tutorial6Id=setInterval(
         ()=>{
             if (document.getElementById("hero").classList.contains("tut-bomb")){
                 clearInterval(tutorial6Id)
+                // clearInterval(raidInt)
                 tutorial7()
             }
         },50
@@ -1180,9 +1184,9 @@ function tutorial7() {
         if (health_bar.health<health_bar.maxHealth && !window.clan.length==0){
             // console.log("main if")
             const randNum=randInt(0,window.clan.length)
-            console.log("index",randNum)
+            // console.log("index",randNum)
             if(randInt(0,2)>0){
-                console.log("attack")
+                // console.log("attack")
                 let enemy=window.clan[randNum].throwStarLeft()
             }    
 
@@ -1227,7 +1231,7 @@ function tutorial7() {
             console.log("%clevel3()","color:#ED1C28;")
         }
 
-    },1200)},4000)
+    },3000)},4000)
 
             
 
