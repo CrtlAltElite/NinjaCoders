@@ -14,7 +14,7 @@ const winMusic = new Audio('./audio/win.mp3')
 const heroDamage2Sound = new Audio('./audio/herodamage2.mp3')
 const heroDamage1Sound = new Audio('./audio/herodamage1.mp3')
 const footDeathSound = new Audio('./audio/footdeath.mp3')
-
+const blockSound = new Audio('./audio/block.mp3')
 const bombFallSound = new Audio('./audio/bombfall.mp3')
 const bombExplodeSound = new Audio('./audio/bombexplode.mp3')
 
@@ -620,6 +620,8 @@ class Token{
                     if (!hero.classList.contains("tut-blk")){
                         hero.classList.add("tut-blk")
                     }
+                    blockSound.currentTime=0
+                    blockSound.play()
                 }
                 endLoop()
             }else if(hero&&direction=="right" && !heroOnLeft() && collision(hero,star)){
