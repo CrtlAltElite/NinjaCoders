@@ -1,14 +1,22 @@
 const waitMusic = new Audio('./audio/wait_music.mp3')
-const heroMusic = new Audio('./audio/hero_initialized.mp3')
+waitMusic.loop=true
+const heroSound = new Audio('./audio/hero_initialized.mp3')
 const level1Music = new Audio('./audio/level1.mp3')
+level1Music.loop=true
 const level2Music = new Audio('./audio/level2.mp3')
+level2Music.loop=true
 const level3Music = new Audio('./audio/level3.mp3')
+level3Music.loop=true
 const gameOverMusic = new Audio('./audio/gameover.mp3')
 const tutorialMusic = new Audio('./audio/tutorial.mp3')
+tutorialMusic.loop=true
 const winMusic = new Audio('./audio/win.mp3')
 const heroDamage2Sound = new Audio('./audio/herodamage2.mp3')
 const heroDamage1Sound = new Audio('./audio/herodamage1.mp3')
 const footDeathSound = new Audio('./audio/footdeath.mp3')
+
+const bombFallSound = new Audio('./audio/bombfall.mp3')
+const bombExplodeSound = new Audio('./audio/bombexplode.mp3')
 
 
 
@@ -18,7 +26,7 @@ document.getElementById('wait-audio')?.addEventListener('click',function(){
     if(this.classList.contains('fa-volume-high')){
         this.classList.replace('fa-volume-high','fa-volume-xmark')
 
-        stopAllAudio()
+        stopAllMusic()
 
     }else if(this.classList.contains('fa-volume-xmark')){
         this.classList.replace('fa-volume-xmark','fa-volume-high')
@@ -33,13 +41,11 @@ document.getElementById('wait-audio')?.addEventListener('click',function(){
 })
 
 
-function stopAllAudio(dontStop){
+function stopAllMusic(dontStop){
     try{
 
     waitMusic.pause()
     waitMusic.currentTime=0
-    heroMusic.pause()
-    heroMusic.currentTime=0
     level1Music.pause()
     level1Music.currentTime=0
     level2Music.pause()
@@ -153,6 +159,7 @@ class Bomb{
         this.goInt
         document.getElementById("backdrop").appendChild(this.node)
         this.node.insertAdjacentHTML("beforebegin",`<div id="bomb-desc"><span id="bomb_ins">To Stop the Bomb:</span><br>${this.command}</div>`)
+        bombFallSound.play()
         this.go()
 
 
@@ -166,6 +173,7 @@ class Bomb{
                 if(this.left >= left_bound && this.left <=right_bound && parseInt(this.top) >= 500){
                     hero.src='./images/damage_animate.gif'
                     this.setSrc('./images/explode.gif')
+                    bombExplodeSound.play()
                     setTimeout(()=>{hero.src="./images/hero-standing-min.png"},2000)
                     health_bar.decreaseHealth()
                     checkDeath()
@@ -175,6 +183,7 @@ class Bomb{
             }
             if(this.top>725){
                 this.setSrc('./images/explode.gif')
+                bombExplodeSound.play()
                 setTimeout(()=>this.destroy(), 1500)
                 clearInterval(this.goInt)
             }
@@ -379,7 +388,7 @@ const IDS=["first" ,"second", "third", "fourth", "hero"]
 
 function checkDeath(){
     if(health_bar.health==health_bar.maxHealth){
-        stopAllAudio(gameOverMusic)
+        stopAllMusic(gameOverMusic)
         gameOverMusic.play()
        
         // setTimeout(()=>{gameOverMusic.pause();gameOverMusic.currentTime=0},7000)
@@ -768,7 +777,7 @@ class Token{
 
 
 function reset(){
-    stopAllAudio()
+    stopAllMusic()
     window.start_clan=[]
     removeAll()
     window.danny=null
@@ -794,10 +803,10 @@ class Hero extends Token{
     static ids = [...HERO_IDS]
     static positions = [...HERO_POSITIONS]
     constructor(){
-        heroMusic.currentTime=0
+        heroSound.currentTime=0
         try{
         
-            let playingPromise=heroMusic.play()
+            let playingPromise=heroSound.play()
             if (playingPromise !== undefined){
                 playingPromise.catch()
             }
