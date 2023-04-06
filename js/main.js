@@ -33,10 +33,9 @@ document.getElementById('wait-audio')?.addEventListener('click',function(){
 })
 
 
-function stopAllAudio(){
+function stopAllAudio(dontStop){
     try{
 
-    
     waitMusic.pause()
     waitMusic.currentTime=0
     heroMusic.pause()
@@ -47,8 +46,11 @@ function stopAllAudio(){
     level2Music.currentTime=0
     level3Music.pause()
     level3Music.currentTime=0
-    gameOverMusic.pause()
-    gameOverMusic.currentTime=0
+    
+    if(dontStop==gameOverMusic){
+        gameOverMusic.pause()
+        gameOverMusic.currentTime=0
+    }
     tutorialMusic.pause()
     tutorialMusic.currentTime=0
     winMusic.pause()
@@ -377,15 +379,10 @@ const IDS=["first" ,"second", "third", "fourth", "hero"]
 
 function checkDeath(){
     if(health_bar.health==health_bar.maxHealth){
-        stopAllAudio()
-
-        try{
-            let playingPromise=gameOverMusic.play()
-            if (playingPromise !== undefined){
-                playingPromise.catch()
-            }
-        }catch{}
-        setTimeout(()=>{gameOverMusic.pause();gameOverMusic.currentTime=0},7000)
+        stopAllAudio(gameOverMusic)
+        gameOverMusic.play()
+       
+        // setTimeout(()=>{gameOverMusic.pause();gameOverMusic.currentTime=0},7000)
         stopRaid()
         reset()
         document.getElementById("gameover").style.visibility="visible"
@@ -982,7 +979,7 @@ function winScreen(){
        
     }catch{}
 
-    setTimeout(()=>{winMusic.pause();winMusic.currentTime=0})
+    // setTimeout(()=>{winMusic.pause();winMusic.currentTime=0})
 }
 function level1(){
     clearMyIntervals()
