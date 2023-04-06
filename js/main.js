@@ -299,6 +299,7 @@ function actions(){
     
 }
 function collision(img1,img2){
+    try{
     const rect1 = img1.getBoundingClientRect();
     const rect2 = img2.getBoundingClientRect();
     const overlapLeft = Math.max(rect1.left, rect2.left);
@@ -309,9 +310,11 @@ function collision(img1,img2){
         return true
     }
     return false;
+}catch{return 0}
 }
 
 function outOfBounds(imgNode, containerNode) {
+    try{
     // Get the boundaries of the container element
     const containerRect = containerNode.getBoundingClientRect();
     // Get the boundaries of the image element
@@ -366,6 +369,8 @@ function outOfBounds(imgNode, containerNode) {
     }
     // If we reach this point, no non-transparent pixels of the image are going outside the container
     return false;
+}
+catch{return 0}
   }
 const POSITIONS=["400px", "500px", "600px", "700px", "50px"]
 const IDS=["first" ,"second", "third", "fourth", "hero"]
