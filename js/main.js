@@ -1,3 +1,61 @@
+const waitMusic = new Audio('./audio/wait_music.mp3')
+const heroMusic = new Audio('./audio/hero_initialized.mp3')
+const level1Music = new Audio('./audio/level1.mp3')
+const level2Music = new Audio('./audio/level2.mp3')
+const level3Music = new Audio('./audio/level3.mp3')
+const gameOverMusic = new Audio('./audio/gameover.mp3')
+const tutorialMusic = new Audio('./audio/tutorial.mp3')
+const winMusic = new Audio('./audio/win.mp3')
+const heroDamage2Sound = new Audio('./audio/herodamage2.mp3')
+const heroDamage1Sound = new Audio('./audio/herodamage1.mp3')
+const footDeathSound = new Audio('./audio/footdeath.mp3')
+
+
+
+
+// fa-volume-highxmark
+document.getElementById('wait-audio')?.addEventListener('click',function(){
+    if(this.classList.contains('fa-volume-high')){
+        this.classList.replace('fa-volume-high','fa-volume-xmark')
+
+        stopAllAudio()
+
+    }else if(this.classList.contains('fa-volume-xmark')){
+        this.classList.replace('fa-volume-xmark','fa-volume-high')
+        try{
+            let playingPromise=waitMusic.play()
+            if (playingPromise !== undefined){
+                playingPromise.catch()
+            } 
+        }catch{}
+
+    }
+})
+
+
+function stopAllAudio(){
+    try{
+
+    
+    waitMusic.pause()
+    waitMusic.currentTime=0
+    heroMusic.pause()
+    heroMusic.currentTime=0
+    level1Music.pause()
+    level1Music.currentTime=0
+    level2Music.pause()
+    level2Music.currentTime=0
+    level3Music.pause()
+    level3Music.currentTime=0
+    gameOverMusic.pause()
+    gameOverMusic.currentTime=0
+    tutorialMusic.pause()
+    tutorialMusic.currentTime=0
+    winMusic.pause()
+    winMusic.currentTime=0
+    }catch{}
+}
+
 class Health{
     constructor(){
         this.health=0
@@ -7,6 +65,26 @@ class Health{
     
     decreaseHealth(){
         if( this.health>=0 && this.health<this.maxHealth){
+            if (this.health%2==0){
+                heroDamage1Sound.currentTime=0
+                try{
+                    let playingPromise=heroDamage1Sound.play()
+                    if (playingPromise !== undefined){
+                        playingPromise.catch()
+                    }
+                }catch{}
+
+            }else{
+                heroDamage2Sound.currentTime=0
+                try{
+                    
+                    let playingPromise=heroDamage2Sound.play()
+                    if (playingPromise !== undefined){
+                        playingPromise.catch()
+                    }
+                }catch{}
+
+            }
             this.health++
             this.node.src=`./images/healthbar/health-${this.health}.png`
         }
@@ -247,11 +325,12 @@ function outOfBounds(imgNode, containerNode) {
     canvas.width = imgWidth;
     canvas.height = imgHeight;
     // Draw the image onto the canvas
-    if(imgWidth||imgHeight==0){return}
+    if(imgWidth||imgHeight==0){return 0}
 
     context.drawImage(imgNode, 0, 0, imgWidth, imgHeight);
     // Get the pixel data for the image
-    const imgData = context.getImageData(0, 0, imgWidth, imgHeight).data;
+    if(imgWidth||imgHeight==0){return 0}
+    const imgData = context.getImageData(0, 0, imgWidth, imgHeight)?.data;
     // Get the pixel data for the background image
     const bgImage = getComputedStyle(containerNode).backgroundImage;
     const bgImageSrc = bgImage.slice(4, -1).replace(/"/g, "");
@@ -263,9 +342,11 @@ function outOfBounds(imgNode, containerNode) {
     canvas.width = bgImgWidth;
     canvas.height = bgImgHeight;
     // Draw the background image onto the canvas
+    if(bgImgWidth||bgImgHeight==0){return 0}
+
     context.drawImage(bgImg, 0, 0, bgImgWidth, bgImgHeight);
     // Get the pixel data for the background image
-    if(bgImgWidth||bgImgHeight==0){return}
+    if(bgImgWidth||bgImgHeight==0){return 0}
     const bgData = context.getImageData(0, 0, bgImgWidth, bgImgHeight).data;
     // Check if any non-transparent pixels of the image are going outside the container
     for (let i = 0; i < imgData.length; i += 4) {
@@ -291,8 +372,17 @@ const IDS=["first" ,"second", "third", "fourth", "hero"]
 
 function checkDeath(){
     if(health_bar.health==health_bar.maxHealth){
-        reset()
+        stopAllAudio()
+
+        try{
+            let playingPromise=gameOverMusic.play()
+            if (playingPromise !== undefined){
+                playingPromise.catch()
+            }
+        }catch{}
+        setTimeout(()=>{gameOverMusic.pause();gameOverMusic.currentTime=0},7000)
         stopRaid()
+        reset()
         document.getElementById("gameover").style.visibility="visible"
     }
 }
@@ -607,6 +697,13 @@ class Token{
                 clearInterval(intervalId)
                 knife.remove()
                 enemy.alive=false
+                footDeathSound.currentTime=0
+                try{
+                    let playingPromise=footDeathSound.play()
+                    if (playingPromise !== undefined){
+                        playingPromise.catch()
+                    }
+                }catch{}
                 enemy.remove()
                 // this.backdrop.removeChild(newImg)  
                 // this.backdrop.appendChild(this.img)
@@ -669,6 +766,7 @@ class Token{
 
 
 function reset(){
+    stopAllAudio()
     window.start_clan=[]
     removeAll()
     window.danny=null
@@ -690,10 +788,19 @@ function reset(){
 
 class Hero extends Token{
     
-    
+
     static ids = [...HERO_IDS]
     static positions = [...HERO_POSITIONS]
     constructor(){
+        heroMusic.currentTime=0
+        try{
+        
+            let playingPromise=heroMusic.play()
+            if (playingPromise !== undefined){
+                playingPromise.catch()
+            }
+
+        }catch{}
         super(Hero)
     }
 
@@ -719,7 +826,7 @@ class Hero extends Token{
         if(   (Bomb.bombList.length>0 && direction !==-1 && Bomb.bombList[0].command==="Walk Right") || 
         (Bomb.bombList.length>0 && direction==-1 && Bomb.bombList[0].command==="Walk Left")){
             Bomb.bombList[0].destroy()
-            if(!this.img.classList.contains("tut-bomb") && this.id==="hero"){
+            if(!this.img.classList?.contains("tut-bomb") && this.id==="hero"){
                 this.img.classList.add("tut-bomb")
             }
 
@@ -740,7 +847,7 @@ class Hero extends Token{
     block(dir="right"){
         if(  Bomb.bombList.length>0 && Bomb.bombList[0].command==="Block"){
             Bomb.bombList[0].destroy()
-            if(!this.img.classList.contains("tut-bomb")){
+            if(!this.img.classList?.contains("tut-bomb")){
 
                 this.img.classList.add("tut-bomb")
             }
@@ -757,7 +864,7 @@ class Hero extends Token{
             this.img.classList.add("block-left")
         }
         this.img.classList.add("blocking")
-        setTimeout(()=>{this.img.src="./images/hero-standing-min.png"; this.isBlocking=false; this.img.classList.remove("blocking","block-left","block-right") },5000)
+        setTimeout(()=>{this.img.src="./images/hero-standing-min.png"; this.isBlocking=false; this.img?.classList.remove("blocking","block-left","block-right") },5000)
     }
 
     blockLeft(){
@@ -862,11 +969,28 @@ function clearMyIntervals(){
 function winScreen(){
     reset()
     document.getElementById("win").style.visibility="visible"
+    try{
+        let playingPromise= winMusic.play()
+        if (playingPromise !== undefined){
+            playingPromise.catch()
+        }
+       
+    }catch{}
+
+    setTimeout(()=>{winMusic.pause();winMusic.currentTime=0})
 }
 function level1(){
     clearMyIntervals()
     removeAll()
     reset()
+    level1Music.currentTime = 0;
+    try{
+        let playingPromise=level1Music.play()
+        if (playingPromise !== undefined){
+            playingPromise.catch()
+        }
+    }catch{}
+
     gameInfo()
     const clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
     window.danny=clan[0]
@@ -887,6 +1011,7 @@ function level1(){
 
         }else if (!health_bar.health<health_bar.maxHealth || !document.getElementsByClassName("bad")?.length>0){
             if(document.getElementById("hero")){
+                level1Music.pause()
                 winScreen()
             }
             clearInterval(intervalIdL1)
@@ -900,10 +1025,18 @@ function level1(){
 function level2(){
     // window.location.reload();
     clearMyIntervals()
-
+    
     removeAll()
-
+    
     reset()
+    level2Music.currentTime=0
+    try{
+        let playingPromise=level2Music.play()
+        if (playingPromise !== undefined){
+            playingPromise.catch()
+        }
+    }catch{}
+
     gameInfo()
     const clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
     window.danny=clan[0]
@@ -932,6 +1065,7 @@ function level2(){
 
         }else if (!health_bar.health<health_bar.maxHealth  || !document.getElementsByClassName("bad")?.length>0){
             if(document.getElementById("hero")){
+                level2Music.pause()
                 winScreen()
             }
             clearInterval(intervalIdL2)
@@ -942,10 +1076,19 @@ function level2(){
 
 function level3(){
     // window.location.reload();
+    
     clearMyIntervals()
     removeAll()
-
+    
     reset()
+    level3Music.currentTime=0
+    try{
+        let playingPromise=level3Music.play()
+        if (playingPromise !== undefined){
+            playingPromise.catch()
+        }
+    }catch{}
+
     gameInfo()
     const clan=[new Footmen(),new Footmen(),new Footmen(),new Footmen()]
     window.danny=clan[0]
@@ -975,6 +1118,8 @@ function level3(){
 
         }else if (!health_bar.health<health_bar.maxHealth || !document.getElementsByClassName("bad")?.length>0){
             if(document.getElementById("hero")){
+                level3Music.pause()
+                level3Music.currentTime=0
                 winScreen()
             }
             clearInterval(intervalIdL3)
@@ -987,6 +1132,14 @@ function level3(){
 
 function tutorial(){
     reset()
+    tutorialMusic.currentTime=0
+    try{
+        let playingPromise=tutorialMusic.play()
+        if (playingPromise !== undefined){
+            playingPromise.catch()
+        }
+    }catch{}
+
     console.clear()
     console.log("%cWelcome to Ninja Coders\n", "color:#8FD129; font-size:20px")
     console.log("%cTo get started lets create our hero", "color:#8FD129;")
@@ -1016,7 +1169,7 @@ function tutorial2(){
     console.log("%cyoshi.walkRight()","color:#ED1C28;")
     const tutorial2Id=setInterval(
         ()=>{
-            if (document.getElementById("hero").classList.contains("tut-r")){
+            if (document.getElementById("hero")?.classList.contains("tut-r")){
                 clearInterval(tutorial2Id)
                 tutorial3()
             }
@@ -1033,7 +1186,7 @@ function tutorial3(){
     console.log("%cyoshi.walkLeft()","color:#ED1C28;")
     const tutorial3Id=setInterval(
         ()=>{
-            if (document.getElementById("hero").classList.contains("tut-l")){
+            if (document.getElementById("hero")?.classList.contains("tut-l")){
                 clearInterval(tutorial3Id)
                 tutorialWalk()
             }
@@ -1051,7 +1204,7 @@ function tutorialWalk(){
     console.log("%cyoshi.walkLeft(3)","color:#ED1C28;")
     const tutorialWalkId=setInterval(
         ()=>{
-            if (document.getElementById("hero").classList.contains("tut-lw")){
+            if (document.getElementById("hero")?.classList.contains("tut-lw")){
                 clearInterval(tutorialWalkId)
                 tutorial4()
             }
@@ -1077,7 +1230,7 @@ function tutorial4(){
 
     const tutorial4Id=setInterval(
         ()=>{
-            if (document.getElementById("hero").classList.contains("tut-blk")){
+            if (document.getElementById("hero")?.classList.contains("tut-blk")){
                 clearInterval(tutorial4Id)
                 clearInterval(tutorial4IdStars)
                 tutorial5()
@@ -1132,7 +1285,7 @@ function tutorial6(){
     window.foot=new Footmen()
     const tutorial6Id=setInterval(
         ()=>{
-            if (document.getElementById("hero").classList.contains("tut-bomb")){
+            if (document.getElementById("hero")?.classList.contains("tut-bomb")){
                 clearInterval(tutorial6Id)
                 // clearInterval(raidInt)
                 tutorial7()
@@ -1229,6 +1382,7 @@ function tutorial7() {
             console.log("%cThe Foot is pist! They now send a constant air raid!","color:#8FD129;")
             console.log("%cTo play type:","color:#8FD129;")
             console.log("%clevel3()","color:#ED1C28;")
+            tutorialMusic.pause()
         }
 
     },3000)},4000)
@@ -1269,3 +1423,5 @@ function levelx(){
 
     },1250)},1000)
 }
+
+
